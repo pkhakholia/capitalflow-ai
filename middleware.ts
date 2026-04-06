@@ -27,6 +27,12 @@ const PUBLIC_ROUTES = [
 const AUTH_ONLY_ROUTES = ["/login", "/signup", "/startup-signup", "/investor-signup"];
 
 function isPublicRoute(path: string): boolean {
+  // Allow static assets from /public (e.g. /logo.png, /robots.txt, etc.)
+  if (/\.[^/]+$/.test(path)) {
+    log("Static asset route:", path);
+    return true;
+  }
+
   // Check exact matches
   if (PUBLIC_ROUTES.includes(path)) {
     log("Public route (exact match):", path);
@@ -144,7 +150,7 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Match all routes except api, _next, and favicon.ico
-    "/((?!api|_next|favicon.ico).*)",
+    // Match application routes only; skip api, next internals, and static files.
+    "/((?!api|_next|.*\\..*).*)",
   ],
 }
