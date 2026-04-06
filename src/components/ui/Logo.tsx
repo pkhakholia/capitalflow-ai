@@ -24,9 +24,9 @@ export function Logo({
   const logoImage = (
     <Image
       src={src}
-      alt={`${BRAND.name} logo`}
-      width={240}
-      height={64}
+      alt="CapitalFlow AI logo"
+      width={120}
+      height={40}
       priority={priority}
       className={cn("h-auto w-[150px] sm:w-[190px]", className)}
     />
@@ -40,4 +40,3 @@ export function Logo({
     </Link>
   );
 }
-
