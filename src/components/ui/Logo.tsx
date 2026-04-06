@@ -1,12 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { BRAND } from "@/lib/branding";
 import { cn } from "@/lib/utils";
 
 type LogoProps = {
   className?: string;
-  variant?: "light" | "dark";
   href?: string;
   withLink?: boolean;
   priority?: boolean;
@@ -14,18 +12,15 @@ type LogoProps = {
 
 export function Logo({
   className,
-  variant = "light",
   href = "/",
   withLink = true,
-  priority = false
+  priority = true
 }: LogoProps) {
-  const src = variant === "dark" ? BRAND.logoDark : BRAND.logoLight;
-
   const logoImage = (
     <Image
-      src={src}
+      src="/logo.png"
       alt="CapitalFlow AI logo"
-      width={120}
+      width={140}
       height={40}
       priority={priority}
       className={cn("h-auto w-[150px] sm:w-[190px]", className)}
