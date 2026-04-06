@@ -1,9 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutGrid, Users, MessageSquare, FileText, User, Shield } from "lucide-react";
-import { Logo } from "@/components/ui/Logo";
+import { LayoutGrid, Users, FileText, User, Shield } from "lucide-react";
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -35,8 +35,16 @@ export function Sidebar() {
       }}
     >
       {/* Logo Area */}
-      <div style={{ padding: "24px 20px" }}>
-        <Logo />
+      <div className="px-4 py-4 border-b">
+        <Link href="/" className="flex items-center gap-2">
+          <Image
+            src="/logo.png"
+            alt="CapitalFlow AI logo"
+            width={140}
+            height={40}
+            priority
+          />
+        </Link>
       </div>
 
       {/* Navigation */}

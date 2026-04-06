@@ -188,6 +188,7 @@ export function InvestorDirectory() {
                 placeholder="Search by sector, stage or investor name..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                suppressHydrationWarning
                 className="w-full rounded-lg border border-[#E5E7EB] bg-white pl-10 pr-4 py-2.5 text-sm text-[#111827] placeholder:text-[#9CA3AF] focus:border-[#2563EB] focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20 font-[family-name:var(--font-dm-sans)]"
               />
             </div>
