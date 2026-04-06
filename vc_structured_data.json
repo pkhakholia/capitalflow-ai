@@ -1,0 +1,352 @@
+[
+  {
+    "url": "https://www.sequoiacap.com",
+    "fund_name": "Sequoia Capital",
+    "website": "https://www.sequoiacap.com",
+    "sectors": [],
+    "stages": [],
+    "regions": [],
+    "ticket_min": 0,
+    "ticket_max": 0,
+    "thesis": "We help the daring build legendary companies.",
+    "investor_type": "Venture Capital"
+  },
+  {
+    "url": "https://a16z.com",
+    "fund_name": "Andreessen Horowitz",
+    "website": "https://a16z.com",
+    "sectors": [
+      "SaaS"
+    ],
+    "stages": [],
+    "regions": [],
+    "ticket_min": 0,
+    "ticket_max": 0,
+    "thesis": "Software Is Eating the World",
+    "investor_type": "Venture Capital"
+  },
+  {
+    "url": "https://www.accel.com",
+    "fund_name": "Accel",
+    "website": "https://www.accel.com",
+    "sectors": [],
+    "stages": [],
+    "regions": [
+      "Global"
+    ],
+    "ticket_min": 0,
+    "ticket_max": 0,
+    "thesis": "First partner to exceptional teams everywhere",
+    "investor_type": "Venture Capital"
+  },
+  {
+    "url": "https://www.benchmark.com",
+    "fund_name": "Benchmark",
+    "website": "https://www.benchmark.com",
+    "sectors": [],
+    "stages": [],
+    "regions": [
+      "United States"
+    ],
+    "ticket_min": 0,
+    "ticket_max": 0,
+    "thesis": "",
+    "investor_type": "Venture Capital"
+  },
+  {
+    "url": "https://www.baincapitalventures.com",
+    "fund_name": "Bain Capital Ventures",
+    "website": "https://www.baincapitalventures.com",
+    "sectors": [
+      "AI",
+      "Consumer",
+      "Fintech",
+      "HealthTech",
+      "DeepTech",
+      "SaaS"
+    ],
+    "stages": [
+      "Any"
+    ],
+    "regions": [],
+    "ticket_min": 0,
+    "ticket_max": 0,
+    "thesis": "Bain Capital Ventures partners with founders across all stages, from incubation to growth, leveraging Bain Capital's global network, deep industry expertise, and hands-on, tailored support to help companies accelerate growth and realize their full potential.",
+    "investor_type": "VC"
+  },
+  {
+    "url": "https://www.greylock.com",
+    "fund_name": "Greylock Partners",
+    "website": "https://www.greylock.com",
+    "sectors": [
+      "AI",
+      "Cybersecurity",
+      "Infrastructure",
+      "SaaS",
+      "Consumer",
+      "Marketplaces",
+      "Fintech",
+      "Crypto"
+    ],
+    "stages": [
+      "Pre-seed",
+      "Seed",
+      "Series A"
+    ],
+    "regions": [],
+    "ticket_min": 0,
+    "ticket_max": 0,
+    "thesis": "Greylock focuses on being the first partner for early-stage companies (Pre-seed, Seed, Series A), with over 80% of investments being the initial check. They are particularly focused on AI-first companies and deeply committed to areas where software can reshape industries and create new ones. They offer a hands-on, selective partnership approach, including their Greylock Edge program for pre-idea, pre-seed, and seed founders.",
+    "investor_type": "Venture Capital"
+  },
+  {
+    "url": "https://www.kleinerperkins.com",
+    "fund_name": "Kleiner Perkins",
+    "website": "https://www.kleinerperkins.com",
+    "sectors": [
+      "SaaS",
+      "Fintech",
+      "AI",
+      "DeepTech",
+      "Consumer",
+      "HealthTech",
+      "Biotech",
+      "Enterprise Software"
+    ],
+    "stages": [],
+    "regions": [],
+    "ticket_min": 0,
+    "ticket_max": 0,
+    "thesis": "Investing in visionary entrepreneurs building impactful and category-defining companies that leverage technology to create new markets or redefine existing ones, particularly in areas like software, AI, deep technology, consumer applications, and healthcare. Focus on companies that 'Make History' by pioneering significant advancements.",
+    "investor_type": "Venture Capital"
+  },
+  {
+    "url": "https://www.bessemer.com",
+    "fund_name": "Bessemer Trust",
+    "website": "https://www.bessemer.com",
+    "sectors": [],
+    "stages": [],
+    "regions": [],
+    "ticket_min": 0,
+    "ticket_max": 0,
+    "thesis": "Enhancing private wealth for generations; Private Wealth Management & Investment Advisory",
+    "investor_type": "Wealth Management Firm"
+  },
+  {
+    "url": "https://www.tigerglobal.com",
+    "fund_name": "Tiger Global Management, LLC",
+    "website": "https://www.tigerglobal.com",
+    "sectors": [],
+    "stages": [
+      "Any"
+    ],
+    "regions": [
+      "Global"
+    ],
+    "ticket_min": 0,
+    "ticket_max": 0,
+    "thesis": "Tiger Global is a research-driven investment firm pursuing a long-term approach to partnering with high-quality, innovative companies across different stages of their lifecycle. With more than 25 years of experience, we aim to identify and invest in the best companies in the world.",
+    "investor_type": "Venture Capital"
+  },
+  {
+    "url": "https://blume.vc",
+    "fund_name": "Blume",
+    "website": "https://blume.vc",
+    "sectors": [
+      "AI",
+      "Climate",
+      "Consumer",
+      "DeepTech",
+      "EdTech",
+      "Enterprise",
+      "Fintech",
+      "HealthTech",
+      "PropTech",
+      "Web3"
+    ],
+    "stages": [
+      "Pre-seed",
+      "Seed",
+      "Series A"
+    ],
+    "regions": [
+      "India"
+    ],
+    "ticket_min": 0,
+    "ticket_max": 0,
+    "thesis": "Blume Ventures backs early-stage, ambitious, and revolutionary founders from India who are solving difficult, impactful problems with global potential. They act as a \"co-founding fund\" and \"lifelong partners,\" providing hands-on support beyond just capital, including network access and strategic guidance, treating portfolio companies like customers.",
+    "investor_type": "VC"
+  },
+  {
+    "url": "https://www.nexusvp.com",
+    "fund_name": "Nexus Venture Partners",
+    "website": "https://www.nexusvp.com",
+    "sectors": [
+      "AI",
+      "Consumer",
+      "Fintech",
+      "SaaS",
+      "DeepTech",
+      "HealthTech",
+      "EdTech",
+      "Gaming",
+      "Insurtech",
+      "PropTech",
+      "RegTech",
+      "Mobility",
+      "B2B Tech"
+    ],
+    "stages": [
+      "Seed",
+      "Series A"
+    ],
+    "regions": [
+      "USA",
+      "India"
+    ],
+    "ticket_min": 2200000,
+    "ticket_max": 43000000,
+    "thesis": "Partnering with extraordinary entrepreneurs building product-first companies, especially those building transformative AI, consumer, and fintech startups.",
+    "investor_type": "Venture Capital"
+  },
+  {
+    "url": "https://www.elevationcapital.com",
+    "fund_name": "Elevation Capital",
+    "website": "https://www.elevationcapital.com",
+    "sectors": [
+      "Consumer",
+      "Fintech",
+      "AI",
+      "DeepTech",
+      "HealthTech",
+      "SaaS"
+    ],
+    "stages": [
+      "Pre-seed",
+      "Seed",
+      "Series A",
+      "Late Stage",
+      "Any"
+    ],
+    "regions": [
+      "India"
+    ],
+    "ticket_min": 0,
+    "ticket_max": 0,
+    "thesis": "Elevation Capital partners with audacious founders, leveraging over 20 years of expertise and a deep operational bench to provide undivided focus and a true partnership ethos from day one. They are committed to going 'all in' with their portfolio companies to help them scale, achieve product-market fit, and grow beyond, including through a dedicated late-stage vehicle for generational Indian companies seeking to go public.",
+    "investor_type": "Venture Capital"
+  },
+  {
+    "url": "https://www.matrixpartners.in",
+    "fund_name": "Z47",
+    "website": "https://www.matrixpartners.in",
+    "sectors": [],
+    "stages": [],
+    "regions": [],
+    "ticket_min": 0,
+    "ticket_max": 0,
+    "thesis": "",
+    "investor_type": ""
+  },
+  {
+    "url": "https://chiratae.com",
+    "fund_name": "Chiratae Ventures",
+    "website": "https://chiratae.com",
+    "sectors": [
+      "Consumer",
+      "DeepTech",
+      "Fintech",
+      "SaaS",
+      "HealthTech",
+      "Climate",
+      "AI",
+      "Web3",
+      "Digital Transformation",
+      "Business Services",
+      "Enterprise Software",
+      "Healthcare",
+      "Education",
+      "Financial Services",
+      "Logistics",
+      "Manufacturing",
+      "Media",
+      "Telecom",
+      "Travel",
+      "AgriTech",
+      "FoodTech",
+      "E-commerce"
+    ],
+    "stages": [
+      "Early Stage",
+      "Growth"
+    ],
+    "regions": [
+      "India",
+      "Global"
+    ],
+    "ticket_min": 2,
+    "ticket_max": 10,
+    "thesis": "Chiratae Ventures is a venture capital firm investing in early and growth stage technology companies with a clear vision to disrupt industries and create significant value. They focus on identifying and partnering with exceptional founders building innovative solutions for the Indian and global markets. With over $1 billion in capital managed and 130+ companies backed, their investment scope covers a broad range of sectors including consumer tech, deeptech, fintech, SaaS, healthtech, cleantech, climate tech, AI/ML, web3, digital transformation, and various other enterprise and consumer-focused industries. Initial investments typically range from $2-10 million, with continued follow-on investments up to $10 million over the company's lifecycle.",
+    "investor_type": "Venture Capital"
+  },
+  {
+    "url": "https://www.antler.co",
+    "fund_name": "Antler",
+    "website": "https://www.antler.co",
+    "sectors": [
+      "AI",
+      "Fintech",
+      "SaaS",
+      "HealthTech",
+      "DeepTech",
+      "Consumer"
+    ],
+    "stages": [
+      "Pre-seed",
+      "Seed",
+      "Series A",
+      "Series B",
+      "Series C",
+      "Growth",
+      "Late Stage"
+    ],
+    "regions": [
+      "Global"
+    ],
+    "ticket_min": 0,
+    "ticket_max": 0,
+    "thesis": "Antler is a global early-stage investor supporting driven founders building category-defining companies to solve the world's biggest challenges. They provide capital, platform, and a global network from inception (pre-seed/seed) through to scale-up capital (Series A onwards) to create lasting impact and generate high returns. They focus on meaningful work rather than chasing trends.",
+    "investor_type": "Venture Capital"
+  },
+  {
+    "url": "https://www.peakxv.com",
+    "fund_name": "Peak XV Partners",
+    "website": "https://www.peakxv.com",
+    "sectors": [],
+    "stages": [
+      "Seed",
+      "Series A",
+      "Series B",
+      "Series C",
+      "Growth",
+      "Late Stage"
+    ],
+    "regions": [],
+    "ticket_min": 0,
+    "ticket_max": 0,
+    "thesis": "We believe outlier founders and ideas shape the future of humanity.",
+    "investor_type": "Venture Capital"
+  },
+  {
+    "url": "https://www.omnivore.vc",
+    "fund_name": "Omnivore",
+    "website": "https://www.omnivore.vc",
+    "sectors": [],
+    "stages": [],
+    "regions": [],
+    "ticket_min": 0,
+    "ticket_max": 0,
+    "thesis": "",
+    "investor_type": ""
+  }
+]
