@@ -25,6 +25,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const { fetchUserPlan, clearUserPlan } = useUserPlan();
 
+  const syncSessionCookies = (session: Awaited<ReturnType<typeof supabase.auth.getSession>>["data"]["session"]) => {
+    if (typeof document === "undefined") return;
+
+    if (!session) {
+      document.cookie = "sb-access-token=; path=/; max-age=0; SameSite=Lax";
+      document.cookie = "sb-refresh-token=; path=/; max-age=0; SameSite=Lax";
+      return;
+    }
+
+    const secureFlag = window.location.protocol === "https:" ? "; Secure" : "";
+    const maxAge = Math.max(0, session.expires_in ?? 3600);
+
+    document.cookie = `sb-access-token=${session.access_token}; path=/; max-age=${maxAge}; SameSite=Lax${secureFlag}`;
+    document.cookie = `sb-refresh-token=${session.refresh_token}; path=/; max-age=2592000; SameSite=Lax${secureFlag}`;
+  };
+
   // Check for existing session on mount
   useEffect(() => {
     const checkSession = async () => {
@@ -32,6 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const { data: { session } } = await supabase.auth.getSession();
         
         if (session?.user) {
+          syncSessionCookies(session);
           const userData: User = {
             id: session.user.id,
             email: session.user.email!,
@@ -41,6 +58,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           await fetchProfile(session.user.id);
           // Fetch user plan for global state
           await fetchUserPlan(session.user.id);
+        } else {
+          syncSessionCookies(null);
         }
       } catch (error) {
         console.error("Error checking session:", error);
@@ -53,7 +72,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // Subscribe to auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === "SIGNED_IN" && session?.user) {
+      if ((event === "SIGNED_IN" || event === "TOKEN_REFRESHED") && session?.user) {
+        syncSessionCookies(session);
         const userData: User = {
           id: session.user.id,
           email: session.user.email!,
@@ -64,6 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Fetch user plan on sign in
         await fetchUserPlan(session.user.id);
       } else if (event === "SIGNED_OUT") {
+        syncSessionCookies(null);
         setUser(null);
         setProfile(null);
         clearUserPlan();
@@ -201,6 +222,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     await supabase.auth.signOut();
+    syncSessionCookies(null);
     setUser(null);
     setProfile(null);
   };

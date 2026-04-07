@@ -102,9 +102,9 @@ export async function middleware(request: NextRequest) {
       refresh_token: refreshCookie.value,
     });
 
-    const { data: { user }, error } = await supabase.auth.getUser();
+    const { data: { session }, error } = await supabase.auth.getSession();
 
-    if (error || !user) {
+    if (error || !session?.user) {
       log("Invalid session, clearing cookies and redirecting");
       // Invalid session, clear cookies and redirect
       const response = NextResponse.redirect(new URL("/login", request.url));
@@ -113,7 +113,7 @@ export async function middleware(request: NextRequest) {
       return response;
     }
 
-    log("Valid session for user:", user.id);
+    log("Valid session for user:", session.user.id);
 
     // Valid session
     if (isAuthOnlyRoute(pathname)) {
@@ -123,7 +123,7 @@ export async function middleware(request: NextRequest) {
       const { data: profile } = await supabase
         .from("profiles")
         .select("role")
-        .eq("id", user.id)
+        .eq("id", session.user.id)
         .single();
 
       if (profile?.role === "investor") {
