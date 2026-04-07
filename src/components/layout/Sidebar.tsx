@@ -156,31 +156,6 @@ export function Sidebar() {
         </div>
       </nav>
 
-      {/* Footer */}
-      <div style={{ padding: "16px 20px", borderTop: "1px solid var(--vm-slate-6)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <div
-            style={{
-              width: "32px",
-              height: "32px",
-              borderRadius: "50%",
-              background: "linear-gradient(135deg, var(--vm-indigo), var(--vm-indigo-mid))",
-              color: "white",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "12px",
-              fontWeight: 600,
-            }}
-          >
-            S
-          </div>
-          <div>
-            <div style={{ fontSize: "13px", fontWeight: 500, color: "var(--vm-slate)" }}>Spencer Tech</div>
-            <div style={{ fontSize: "11px", color: "var(--vm-slate-3)" }}>Seed Stage</div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
