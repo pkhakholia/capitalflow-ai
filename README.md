@@ -18,7 +18,7 @@ npm install
 npm run dev
 ```
 
-Then open `http://localhost:3000`.
+Then open your app at the URL shown by the Next.js dev server output.
 
 ## Pages
 
