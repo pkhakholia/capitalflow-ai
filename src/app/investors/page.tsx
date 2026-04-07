@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Search, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { investorRowToProfile, startupRowToProfile } from "@/lib/supabase-mapping";
@@ -9,7 +9,6 @@ import type { InvestorProfile, StartupProfile, MatchResult } from "@/lib/types";
 import { InvestorCard } from "@/components/investors/InvestorCard";
 import { ContactModal } from "@/components/matches/ContactModal";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { buttonClasses } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 
 function pickActiveByTimestamp<T extends Record<string, unknown>>(rows: T[]): T | null {
@@ -36,7 +35,7 @@ function pickActiveByTimestamp<T extends Record<string, unknown>>(rows: T[]): T 
 }
 
 export default function InvestorsPage() {
-  const { user, isLoading: authLoading } = useAuth();
+  const { isLoading: authLoading } = useAuth();
 
   if (authLoading) {
     return (
@@ -50,6 +49,7 @@ export default function InvestorsPage() {
 }
 
 function InvestorsContent() {
+  const router = useRouter();
   const [investors, setInvestors] = React.useState<InvestorProfile[]>([]);
   const [activeStartup, setActiveStartup] = React.useState<StartupProfile | null>(null);
   
@@ -206,7 +206,8 @@ function InvestorsContent() {
                 <InvestorCard 
                   key={investor.id} 
                   investor={investor} 
-                  onContactClick={(method) => handleContactClick(investor, method)} 
+                  onContactClick={(method) => handleContactClick(investor, method)}
+                  onViewClick={() => router.push(`/investors/${investor.id}`)}
                 />
               ))
             ) : (

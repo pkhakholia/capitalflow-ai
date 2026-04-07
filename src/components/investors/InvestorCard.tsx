@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 interface InvestorCardProps {
   investor: InvestorProfile;
   onContactClick: (method: "email" | "pitchDeck") => void;
+  onViewClick?: () => void;
 }
 
 function usdFormat(value: number) {
@@ -18,7 +19,7 @@ function usdFormat(value: number) {
   return `$${value}`;
 }
 
-export function InvestorCard({ investor, onContactClick }: InvestorCardProps) {
+export function InvestorCard({ investor, onContactClick, onViewClick }: InvestorCardProps) {
   const checkMin = usdFormat(investor.checkSizeUsdMin);
   const checkMax = usdFormat(investor.checkSizeUsdMax);
   const ticketRange = investor.checkSizeUsdMax > 0 ? `${checkMin} - ${checkMax}` : "Flexible / Unknown";
@@ -88,6 +89,12 @@ export function InvestorCard({ investor, onContactClick }: InvestorCardProps) {
 
       {/* 6. Actions */}
       <div className="w-[120px] ml-auto flex flex-col gap-1.5 items-end justify-center">
+        <button
+          onClick={() => onViewClick?.()}
+          className="w-full py-1.5 px-3 bg-slate-100 hover:bg-slate-200 text-[var(--vm-slate-2)] text-[11px] font-semibold rounded transition-colors text-center flex justify-center items-center"
+        >
+          View
+        </button>
         <button
           onClick={() => onContactClick("email")}
           className="w-full py-1.5 px-3 bg-[var(--vm-indigo)] hover:bg-[var(--vm-indigo-mid)] text-white text-[11px] font-bold tracking-wide rounded transition-colors shadow-sm text-center flex justify-center items-center"

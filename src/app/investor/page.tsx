@@ -1,156 +1,181 @@
 "use client";
 
 import * as React from "react";
-import { Link2, MapPin, Edit2, Send, MessageSquare, CheckCircle2 } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Loader2, Search } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
-export default function InvestorProfilePage() {
+type InvestorDirectoryItem = {
+  id: string;
+  fund_name: string;
+  investor_type: string;
+  stage: string;
+  geography: string;
+};
+
+function toText(value: unknown): string {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+export default function InvestorViewPickerPage() {
+  const router = useRouter();
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
+  const [search, setSearch] = React.useState("");
+  const [selectedInvestorId, setSelectedInvestorId] = React.useState("");
+  const [investors, setInvestors] = React.useState<InvestorDirectoryItem[]>([]);
+
+  React.useEffect(() => {
+    let isMounted = true;
+
+    async function fetchInvestors() {
+      try {
+        setLoading(true);
+        const { data, error: queryError } = await supabase
+          .from("investors")
+          .select("id, fund_name, investor_type, stage, geography")
+          .order("fund_name", { ascending: true });
+
+        if (queryError) {
+          throw new Error(queryError.message);
+        }
+
+        const rows = ((data ?? []) as Record<string, unknown>[]).map((row) => ({
+          id: toText(row.id),
+          fund_name: toText(row.fund_name) || "Unnamed Investor",
+          investor_type: toText(row.investor_type),
+          stage: toText(row.stage),
+          geography: toText(row.geography)
+        }));
+
+        const validRows = rows.filter((row) => row.id);
+
+        if (isMounted) {
+          setInvestors(validRows);
+          if (validRows.length > 0) {
+            setSelectedInvestorId(validRows[0].id);
+          }
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError(err instanceof Error ? err.message : "Failed to load investor directory.");
+        }
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    }
+
+    fetchInvestors();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const filteredInvestors = React.useMemo(() => {
+    if (!search.trim()) return investors;
+    const term = search.trim().toLowerCase();
+    return investors.filter((investor) => {
+      return (
+        investor.fund_name.toLowerCase().includes(term) ||
+        investor.investor_type.toLowerCase().includes(term) ||
+        investor.stage.toLowerCase().includes(term) ||
+        investor.geography.toLowerCase().includes(term)
+      );
+    });
+  }, [investors, search]);
+
   return (
-    <div style={{ minHeight: "100vh", background: "var(--vm-surface)" }}>
-      {/* Hero Layout */}
-      <div style={{ background: "var(--vm-emerald-light)", borderBottom: "1px solid var(--vm-slate-5)", padding: "40px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", maxWidth: "1000px", margin: "0 auto" }}>
-          <div style={{ display: "flex", gap: "20px" }}>
-            <div style={{ width: "64px", height: "64px", borderRadius: "12px", background: "var(--vm-emerald)", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "24px", fontWeight: 600 }}>
-              HV
-            </div>
-            <div>
-              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "8px" }}>
-                <h1 style={{ fontSize: "22px", fontWeight: 700, color: "var(--vm-slate)", margin: 0 }}>Horizon Ventures</h1>
-                <div style={{ display: "flex", gap: "6px" }}>
-                  <span style={{ border: "1px solid var(--vm-indigo)", color: "var(--vm-indigo)", padding: "2px 8px", borderRadius: "99px", fontSize: "11px", fontWeight: 600 }}>B2B SaaS</span>
-                  <span style={{ border: "1px solid var(--vm-emerald)", color: "var(--vm-emerald)", padding: "2px 8px", borderRadius: "99px", fontSize: "11px", fontWeight: 600 }}>Series A</span>
-                </div>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "16px", color: "var(--vm-slate-3)", fontSize: "13px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                  <MapPin size={14} />
-                  London, UK
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                  <Link2 size={14} />
-                  <a href="#" style={{ color: "var(--vm-emerald)", textDecoration: "none" }}>horizon.vc</a>
-                </div>
-              </div>
-            </div>
-          </div>
-          <button style={{ background: "var(--vm-white)", border: "1px solid var(--vm-slate-5)", color: "var(--vm-slate)", padding: "8px 16px", borderRadius: "var(--radius-sm)", fontSize: "13px", fontWeight: 500, display: "flex", alignItems: "center", gap: "6px", cursor: "pointer" }}>
-            <Edit2 size={14} />
-            Edit Profile
-          </button>
-        </div>
-      </div>
-
-      {/* Content Grid */}
-      <div style={{ padding: "32px 40px", maxWidth: "1000px", margin: "0 auto", display: "grid", gridTemplateColumns: "2fr 1fr", gap: "24px", alignItems: "start" }}>
-        
-        {/* LEFT COLUMN */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-          
-          {/* Investment Thesis Card */}
-          <div style={{ background: "var(--vm-white)", border: "1px solid var(--vm-slate-5)", borderRadius: "var(--radius-lg)", padding: "24px" }}>
-            <h2 style={{ fontSize: "16px", fontWeight: 600, color: "var(--vm-slate)", marginBottom: "16px", marginTop: 0 }}>Investment Thesis</h2>
-            <p style={{ fontSize: "13.5px", lineHeight: 1.6, color: "var(--vm-slate-2)", margin: 0 }}>
-              We back resilient founders building the infrastructure layer of tomorrow's internet. We focus strictly on B2B SaaS and DevTools, concentrating our capital where our operating experience lies. We believe that the next decade of enterprise value will be created by companies that reduce complexity, consolidate workflows, and empower developers to ship faster.
-            </p>
-          </div>
-
-          {/* Value-Add Card */}
-          <div style={{ background: "var(--vm-white)", border: "1px solid var(--vm-slate-5)", borderRadius: "var(--radius-lg)", padding: "24px" }}>
-            <h2 style={{ fontSize: "16px", fontWeight: 600, color: "var(--vm-slate)", marginBottom: "20px", marginTop: 0 }}>How We Support Founders</h2>
-            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              <div style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
-                <CheckCircle2 size={16} color="var(--vm-emerald)" style={{ marginTop: "2px" }} />
-                <div>
-                  <div style={{ fontSize: "13px", fontWeight: 600, color: "var(--vm-slate)", marginBottom: "4px" }}>Talent Acquisition</div>
-                  <div style={{ fontSize: "13px", color: "var(--vm-slate-3)" }}>Dedicated internal recruiting team to help you close engineering and executive hires.</div>
-                </div>
-              </div>
-              <div style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
-                <CheckCircle2 size={16} color="var(--vm-emerald)" style={{ marginTop: "2px" }} />
-                <div>
-                  <div style={{ fontSize: "13px", fontWeight: 600, color: "var(--vm-slate)", marginBottom: "4px" }}>Go-to-Market Strategy</div>
-                  <div style={{ fontSize: "13px", color: "var(--vm-slate-3)" }}>On-call operating partners who have scaled enterprise sales from $0 to $50M ARR.</div>
-                </div>
-              </div>
-              <div style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
-                <CheckCircle2 size={16} color="var(--vm-emerald)" style={{ marginTop: "2px" }} />
-                <div>
-                  <div style={{ fontSize: "13px", fontWeight: 600, color: "var(--vm-slate)", marginBottom: "4px" }}>Customer Introductions</div>
-                  <div style={{ fontSize: "13px", color: "var(--vm-slate-3)" }}>A curated network of 500+ CIOs across the Fortune 1000.</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Recent Investments Card */}
-          <div style={{ background: "var(--vm-white)", border: "1px solid var(--vm-slate-5)", borderRadius: "var(--radius-lg)", padding: "24px" }}>
-            <h2 style={{ fontSize: "16px", fontWeight: 600, color: "var(--vm-slate)", marginBottom: "20px", marginTop: 0 }}>Recent Investments</h2>
-            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "var(--vm-slate-6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: 600, color: "var(--vm-slate-2)" }}>NX</div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: "13px", fontWeight: 600, color: "var(--vm-slate)" }}>NexaFlow</div>
-                </div>
-                <div style={{ fontSize: "11px", color: "var(--vm-emerald)", background: "var(--vm-emerald-light)", padding: "4px 8px", borderRadius: "99px", fontWeight: 600 }}>Seed</div>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "var(--vm-slate-6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: 600, color: "var(--vm-slate-2)" }}>OP</div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: "13px", fontWeight: 600, color: "var(--vm-slate)" }}>OpsGen</div>
-                </div>
-                <div style={{ fontSize: "11px", color: "var(--vm-indigo)", background: "var(--vm-indigo-light)", padding: "4px 8px", borderRadius: "99px", fontWeight: 600 }}>Series A</div>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "var(--vm-slate-6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: 600, color: "var(--vm-slate-2)" }}>VD</div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: "13px", fontWeight: 600, color: "var(--vm-slate)" }}>VercelData</div>
-                </div>
-                <div style={{ fontSize: "11px", color: "var(--vm-amber)", background: "var(--vm-amber-light)", padding: "4px 8px", borderRadius: "99px", fontWeight: 600 }}>Pre-Seed</div>
-              </div>
-            </div>
-          </div>
-
+    <div className="min-h-screen bg-[var(--vm-surface)] p-6 md:p-8">
+      <div className="mx-auto max-w-5xl space-y-6">
+        <div>
+          <h1 className="text-2xl font-semibold text-[var(--vm-slate)]">Investor View</h1>
+          <p className="mt-1 text-sm text-[var(--vm-slate-3)]">
+            Select any investor from the directory to view complete details.
+          </p>
         </div>
 
-        {/* RIGHT COLUMN */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-          
-          {/* Investment Criteria Side-card */}
-          <div style={{ background: "var(--vm-emerald)", borderRadius: "var(--radius-lg)", padding: "24px", color: "white", boxShadow: "var(--shadow-md)" }}>
-            <h2 style={{ fontSize: "13px", fontWeight: 500, color: "var(--vm-emerald-light)", marginBottom: "4px", marginTop: 0 }}>Sweet Spot Check Size</h2>
-            <div style={{ fontFamily: "var(--font-fraunces), serif", fontSize: "28px", fontWeight: 600, marginBottom: "24px" }}>
-              $1M - $3M
-            </div>
+        {loading ? (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Loading investors
+              </CardTitle>
+              <CardDescription>Fetching investor directory from Supabase.</CardDescription>
+            </CardHeader>
+          </Card>
+        ) : error ? (
+          <Card>
+            <CardHeader>
+              <CardTitle>Could not load investors</CardTitle>
+              <CardDescription>{error}</CardDescription>
+            </CardHeader>
+          </Card>
+        ) : (
+          <>
+            <Card>
+              <CardContent className="p-4 sm:p-5">
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <div className="relative flex-1">
+                    <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--vm-slate-4)]" />
+                    <input
+                      value={search}
+                      onChange={(event) => setSearch(event.target.value)}
+                      placeholder="Search by fund, stage, geography, or investor type..."
+                      className="w-full rounded-lg border border-[var(--vm-slate-5)] bg-white py-2 pl-9 pr-3 text-sm text-[var(--vm-slate-2)] outline-none transition-colors focus:border-[var(--vm-indigo)]"
+                    />
+                  </div>
+                  <select
+                    value={selectedInvestorId}
+                    onChange={(event) => setSelectedInvestorId(event.target.value)}
+                    className="w-full rounded-lg border border-[var(--vm-slate-5)] bg-white px-3 py-2 text-sm text-[var(--vm-slate-2)] outline-none transition-colors focus:border-[var(--vm-indigo)] sm:w-[320px]"
+                  >
+                    {filteredInvestors.map((investor) => (
+                      <option key={investor.id} value={investor.id}>
+                        {investor.fund_name}
+                      </option>
+                    ))}
+                  </select>
+                  <Button
+                    onClick={() => selectedInvestorId && router.push(`/investors/${selectedInvestorId}`)}
+                    disabled={!selectedInvestorId}
+                    className="whitespace-nowrap"
+                  >
+                    View Investor
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
 
-            <div style={{ borderTop: "1px solid rgba(255,255,255,0.2)", paddingTop: "20px", paddingBottom: "24px", display: "flex", flexDirection: "column", gap: "16px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px" }}>
-                <span style={{ color: "rgba(255,255,255,0.9)" }}>Target Ownership</span>
-                <span style={{ fontWeight: 600 }}>10-15%</span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px" }}>
-                <span style={{ color: "rgba(255,255,255,0.9)" }}>Lead vs. Follow</span>
-                <span style={{ fontWeight: 600 }}>Lead preferred</span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px" }}>
-                <span style={{ color: "rgba(255,255,255,0.9)" }}>Board Seat</span>
-                <span style={{ fontWeight: 600 }}>Required</span>
-              </div>
-            </div>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-              <button style={{ background: "white", color: "var(--vm-slate)", border: "none", padding: "10px", borderRadius: "var(--radius-sm)", fontSize: "13px", fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", cursor: "pointer" }}>
-                <Send size={16} />
-                Send Pitch
-              </button>
-              <button style={{ background: "transparent", color: "white", border: "1px solid rgba(255,255,255,0.3)", padding: "10px", borderRadius: "var(--radius-sm)", fontSize: "13px", fontWeight: 500, display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", cursor: "pointer", transition: "background 0.2s" }} onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.1)"} onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}>
-                <MessageSquare size={16} />
-                Message
-              </button>
-            </div>
-          </div>
-
-        </div>
-
+            <Card>
+              <CardHeader>
+                <CardTitle>Directory Snapshot</CardTitle>
+                <CardDescription>{filteredInvestors.length} investor(s) available.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {filteredInvestors.slice(0, 8).map((investor) => (
+                  <div
+                    key={investor.id}
+                    className="flex flex-col gap-2 rounded-lg border border-[var(--vm-slate-6)] bg-white p-3 sm:flex-row sm:items-center sm:justify-between"
+                  >
+                    <div>
+                      <p className="text-sm font-semibold text-[var(--vm-slate)]">{investor.fund_name}</p>
+                      <p className="text-xs text-[var(--vm-slate-3)]">
+                        {[investor.investor_type, investor.stage, investor.geography].filter(Boolean).join(" • ")}
+                      </p>
+                    </div>
+                    <Link href={`/investors/${investor.id}`} className="text-sm font-medium text-[var(--vm-indigo)] hover:underline">
+                      Open details
+                    </Link>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </>
+        )}
       </div>
     </div>
   );

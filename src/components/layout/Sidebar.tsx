@@ -13,12 +13,14 @@ export function Sidebar() {
     { name: "Matches", href: "/dashboard/matches", icon: Users, badge: "3" },
     { name: "Investors", href: "/investors", icon: Users },
     { name: "Pitch Builder", href: "/pitch-builder", icon: FileText },
+    { name: "Investor View", href: "/investor", icon: Shield },
   ];
 
   const profileLinks = [
     { name: "Startup Profile", href: "/startup", icon: User },
-    { name: "Investor View", href: "/investor", icon: Shield },
   ];
+
+  const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
   return (
     <div
@@ -57,7 +59,7 @@ export function Sidebar() {
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
             {platformLinks.map((item) => {
-              const active = pathname === item.href;
+              const active = isActive(item.href);
               return (
                 <Link
                   key={item.href}
@@ -117,7 +119,7 @@ export function Sidebar() {
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
             {profileLinks.map((item) => {
-              const active = pathname === item.href;
+              const active = isActive(item.href);
               return (
                 <Link
                   key={item.href}
