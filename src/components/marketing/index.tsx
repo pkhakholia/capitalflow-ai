@@ -160,16 +160,15 @@ export function FeaturesSection() {
 
 export function SocialProof() {
   const stats = [
-    { label: "Capital Deployed", value: "$1.2B+" },
-    { label: "Founders Funded", value: "3,400+" },
-    { label: "Active Investors", value: "850+" },
+    { label: "Investor Categories: VC, PE, MicroVC, Family Office, Angels, CVC", value: "5+" },
+    { label: "Active Investors", value: "1,000+" },
     { label: "Signal Accuracy", value: "94%" },
   ];
 
   return (
     <section className="border-y border-[var(--vm-slate-5)] bg-[var(--vm-surface)] py-16">
       <div className="mx-auto max-w-6xl px-6">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           {stats.map((stat, idx) => (
             <div key={idx} className="flex flex-col items-center justify-center text-center">
               <span className="font-[family-name:var(--font-fraunces)] text-4xl font-semibold text-[var(--vm-slate)] md:text-5xl">{stat.value}</span>
