@@ -2,26 +2,40 @@
 
 import Link from "next/link";
 import type { Plan } from "@/lib/pricing";
+import { PaymentButton } from "@/components/PaymentButton";
 
 interface PricingCardProps {
   plan: Plan;
   isYearly: boolean;
   isLoggedIn: boolean;
   currentPlan?: string;
+  userEmail?: string;
+  userName?: string;
+  userPhone?: string;
+  onUpgradeSuccess?: (paymentId: string) => void;
+  onUpgradeFailure?: (error: string) => void;
 }
 
-export function PricingCard({ plan, isYearly, isLoggedIn, currentPlan = "free" }: PricingCardProps) {
+export function PricingCard({
+  plan,
+  isYearly,
+  isLoggedIn,
+  currentPlan = "free",
+  userEmail = "",
+  userName = "",
+  userPhone = "",
+  onUpgradeSuccess,
+  onUpgradeFailure
+}: PricingCardProps) {
   const price = isYearly ? plan.yearlyPrice : plan.monthlyPrice;
   const period = isYearly ? "/year" : "/month";
   const isFree = price === 0;
-  const isCurrentPlan = plan.name.toLowerCase().includes(currentPlan.toLowerCase()) ||
+  const isCurrentPlan =
+    plan.name.toLowerCase().includes(currentPlan.toLowerCase()) ||
     (currentPlan === "free" && plan.name === "Free") ||
     (currentPlan === "pro" && plan.name === "Flow Pro") ||
     (currentPlan === "gold" && plan.name === "Flow Gold");
-
-  const ctaLink = isFree ? "/founder-profile" : "/signup";
-  const ctaText = isCurrentPlan ? "Current Plan" : isFree ? "Get Started" : "Upgrade Now";
-  const isCtaDisabled = isCurrentPlan;
+  const amountInPaise = price * 100;
 
   return (
     <div
@@ -42,14 +56,10 @@ export function PricingCard({ plan, isYearly, isLoggedIn, currentPlan = "free" }
       <div className="mb-6 text-center">
         <h3 className="text-lg font-semibold text-slate-900">{plan.name}</h3>
         <div className="mt-4 flex items-baseline justify-center gap-1">
-          <span className="text-4xl font-bold text-slate-900">
-            ₹{price.toLocaleString()}
-          </span>
+          <span className="text-4xl font-bold text-slate-900">Rs{price.toLocaleString()}</span>
           <span className="text-sm text-slate-500">{period}</span>
         </div>
-        {isYearly && !isFree && (
-          <p className="mt-1 text-xs text-slate-500">Billed annually</p>
-        )}
+        {isYearly && !isFree && <p className="mt-1 text-xs text-slate-500">Billed annually</p>}
       </div>
 
       {isFree ? (
@@ -64,11 +74,22 @@ export function PricingCard({ plan, isYearly, isLoggedIn, currentPlan = "free" }
           disabled
           className="block w-full cursor-default rounded-lg bg-green-100 py-3 text-center text-sm font-semibold text-green-700"
         >
-          Current Plan ✓
+          Current Plan
         </button>
+      ) : isLoggedIn ? (
+        <PaymentButton
+          planName={plan.name}
+          amount={amountInPaise}
+          currency="INR"
+          userEmail={userEmail}
+          userName={userName}
+          userPhone={userPhone}
+          onSuccess={(paymentId) => onUpgradeSuccess?.(paymentId)}
+          onFailure={(error) => onUpgradeFailure?.(error)}
+        />
       ) : (
         <Link
-          href={ctaLink}
+          href="/signup"
           className={`block w-full rounded-lg py-3 text-center text-sm font-semibold transition-colors ${
             plan.mostPopular
               ? "bg-[#4F46E5] text-white hover:bg-[#4338CA]"
@@ -79,27 +100,37 @@ export function PricingCard({ plan, isYearly, isLoggedIn, currentPlan = "free" }
         </Link>
       )}
 
-      <p className="mt-3 text-center text-xs text-slate-500">
-        Cancel anytime
-      </p>
+      <p className="mt-3 text-center text-xs text-slate-500">Cancel anytime</p>
 
       <ul className="mt-6 space-y-3">
         <li className="flex items-center gap-2 text-sm text-slate-700">
           <svg className="h-4 w-4 text-[#4F46E5]" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+            <path
+              fillRule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clipRule="evenodd"
+            />
           </svg>
           <span className="font-medium">{plan.features.outreach}</span> outreach
         </li>
         <li className="flex items-center gap-2 text-sm text-slate-700">
           <svg className="h-4 w-4 text-[#4F46E5]" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+            <path
+              fillRule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clipRule="evenodd"
+            />
           </svg>
           <span className="font-medium">{plan.features.aiMatching}</span> AI matches
         </li>
         {plan.features.aiAnalyzer !== "-" && (
           <li className="flex items-center gap-2 text-sm text-slate-700">
             <svg className="h-4 w-4 text-[#4F46E5]" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              <path
+                fillRule="evenodd"
+                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                clipRule="evenodd"
+              />
             </svg>
             AI Pitch Deck Analyzer
           </li>
@@ -107,14 +138,22 @@ export function PricingCard({ plan, isYearly, isLoggedIn, currentPlan = "free" }
         {plan.features.pitchBuilder !== "-" && (
           <li className="flex items-center gap-2 text-sm text-slate-700">
             <svg className="h-4 w-4 text-[#4F46E5]" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              <path
+                fillRule="evenodd"
+                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                clipRule="evenodd"
+              />
             </svg>
             Pitch Builder
           </li>
         )}
         <li className="flex items-center gap-2 text-sm text-slate-700">
           <svg className="h-4 w-4 text-[#4F46E5]" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+            <path
+              fillRule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clipRule="evenodd"
+            />
           </svg>
           {plan.features.investorSearch}
         </li>
@@ -122,3 +161,4 @@ export function PricingCard({ plan, isYearly, isLoggedIn, currentPlan = "free" }
     </div>
   );
 }
+

@@ -16,12 +16,22 @@ export default function PricingPage() {
   const [isYearly, setIsYearly] = React.useState(false);
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [userEmail, setUserEmail] = React.useState("");
+  const [userName, setUserName] = React.useState("");
+  const [userPhone, setUserPhone] = React.useState("");
   const { userPlan, isLoading: isPlanLoading } = useUserPlan();
 
   React.useEffect(() => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setIsLoggedIn(!!session?.user);
+      setUserEmail(session?.user?.email ?? "");
+      setUserName(
+        typeof session?.user?.user_metadata?.full_name === "string"
+          ? session.user.user_metadata.full_name
+          : ""
+      );
+      setUserPhone(session?.user?.phone ?? "");
       setIsLoading(false);
     };
     checkAuth();
@@ -116,6 +126,15 @@ export default function PricingPage() {
                 isYearly={isYearly}
                 isLoggedIn={isLoggedIn}
                 currentPlan={currentPlan}
+                userEmail={userEmail}
+                userName={userName}
+                userPhone={userPhone}
+                onUpgradeSuccess={() => {
+                  window.location.reload();
+                }}
+                onUpgradeFailure={(error) => {
+                  console.error("Upgrade failed:", error);
+                }}
               />
             ))}
           </div>
