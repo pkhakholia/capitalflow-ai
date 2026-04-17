@@ -10,10 +10,15 @@ function getRequiredEnv(name: "RAZORPAY_KEY_ID" | "RAZORPAY_KEY_SECRET"): string
   return value;
 }
 
-const razorpayClient = new Razorpay({
-  key_id: getRequiredEnv("RAZORPAY_KEY_ID"),
-  key_secret: getRequiredEnv("RAZORPAY_KEY_SECRET")
-});
+function getRazorpayClient(): Razorpay {
+  const keyId = getRequiredEnv("RAZORPAY_KEY_ID");
+  const keySecret = getRequiredEnv("RAZORPAY_KEY_SECRET");
+
+  return new Razorpay({
+    key_id: keyId,
+    key_secret: keySecret
+  });
+}
 
 /**
  * Creates a one-time Razorpay order.
@@ -23,6 +28,7 @@ export async function createOrder(
   currency: string,
   receipt: string
 ){
+  const razorpayClient = getRazorpayClient();
   return razorpayClient.orders.create({
     amount,
     currency,
@@ -38,6 +44,7 @@ export async function createSubscription(
   totalCount: number,
   customerId?: string
 ){
+  const razorpayClient = getRazorpayClient();
   return razorpayClient.subscriptions.create({
     plan_id: planId,
     total_count: totalCount,
