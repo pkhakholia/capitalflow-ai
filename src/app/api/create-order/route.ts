@@ -1,6 +1,14 @@
 import Razorpay from "razorpay";
 import { NextResponse } from "next/server";
 
+/*
+  Production env checklist (Vercel Project Settings -> Environment Variables):
+  - RAZORPAY_KEY_ID
+  - RAZORPAY_KEY_SECRET
+  - NEXT_PUBLIC_RAZORPAY_KEY_ID
+  - RAZORPAY_WEBHOOK_SECRET (required for webhook verification routes)
+*/
+
 type CreateOrderResponse = {
   order: {
     id: string;
@@ -56,13 +64,37 @@ export async function POST() {
 
     return NextResponse.json({ order: safeOrder } satisfies CreateOrderResponse, { status: 200 });
   } catch (error) {
-    console.error("[create-order] error:", error);
+    const err = error as {
+      message?: string;
+      error?: {
+        code?: string;
+        description?: string;
+        source?: string;
+        step?: string;
+        reason?: string;
+      };
+      code?: string;
+      description?: string;
+    };
+
+    const razorpayCode = err?.error?.code ?? err?.code ?? "UNKNOWN_ERROR";
+    const razorpayDescription =
+      err?.error?.description ?? err?.description ?? err?.message ?? "Failed to create Razorpay order.";
+
+    console.error("[create-order] error:", {
+      razorpayCode,
+      razorpayDescription,
+      source: err?.error?.source,
+      step: err?.error?.step,
+      reason: err?.error?.reason,
+      rawError: error
+    });
+
     return NextResponse.json(
       {
-        error:
-          error instanceof Error
-            ? { name: error.name, message: error.message, stack: error.stack }
-            : { message: "Failed to create Razorpay order." }
+        error: "Failed to create Razorpay order.",
+        razorpayCode,
+        razorpayDescription
       },
       { status: 500 }
     );

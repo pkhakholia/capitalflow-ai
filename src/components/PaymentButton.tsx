@@ -123,11 +123,19 @@ export function PaymentButton({
       }
 
       if (!resolvedKey) {
+        console.error("[payment-button] Missing NEXT_PUBLIC_RAZORPAY_KEY_ID on client", {
+          envValuePresent: Boolean(process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID),
+          resolvedKeyPresent: Boolean(resolvedKey)
+        });
         throw new Error("Missing NEXT_PUBLIC_RAZORPAY_KEY_ID");
       }
 
       if (!resolvedOrderId && !subscriptionId) {
         throw new Error("No Razorpay order or subscription found for checkout");
+      }
+
+      if (!Number.isInteger(amount)) {
+        console.error("[payment-button] Razorpay amount should be in paise (integer)", { amount });
       }
 
       openCheckout({

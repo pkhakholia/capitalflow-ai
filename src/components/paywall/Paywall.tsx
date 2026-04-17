@@ -47,10 +47,19 @@ export function Paywall({ onUnlocked }: { onUnlocked?: () => void }) {
 
       const keyId = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID as string | undefined;
       if (!keyId) {
+        console.error("[paywall] Missing NEXT_PUBLIC_RAZORPAY_KEY_ID on client", {
+          envValuePresent: Boolean(process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID)
+        });
         throw new Error("Missing NEXT_PUBLIC_RAZORPAY_KEY_ID env var on client.");
       }
 
       console.log("[paywall] opening checkout for order:", order.id);
+
+      if (!Number.isInteger(order.amount)) {
+        console.error("[paywall] Razorpay amount should be in paise (integer)", {
+          amount: order.amount
+        });
+      }
 
       const options = {
         key: keyId,
