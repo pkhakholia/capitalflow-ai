@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import type { Plan } from "@/lib/pricing";
+import { RazorpayButton } from "@/components/RazorpayButton";
 
 interface PricingCardProps {
   plan: Plan;
@@ -86,13 +87,7 @@ export function PricingCard({
         </button>
       ) : isProPlan ? (
         <div className="w-full text-center">
-          <div
-            className="[&_form]:mx-auto [&_form]:w-full [&_iframe]:mx-auto [&_iframe]:max-w-full"
-            dangerouslySetInnerHTML={{
-              __html:
-                '<form><script src="https://checkout.razorpay.com/v1/payment-button.js" data-payment_button_id="pl_SeVxgXvkLncDMj" async></script></form>'
-            }}
-          />
+          <RazorpayButton buttonId="pl_SeVxgXvkLncDMj" />
           <p className="mt-3 text-center text-xs text-slate-500">
             After payment, your plan will be activated within 24 hours. Contact support@capitalflow.in
             for assistance.
@@ -100,13 +95,7 @@ export function PricingCard({
         </div>
       ) : isGoldPlan ? (
         <div className="w-full text-center">
-          <div
-            className="[&_form]:mx-auto [&_form]:w-full [&_iframe]:mx-auto [&_iframe]:max-w-full"
-            dangerouslySetInnerHTML={{
-              __html:
-                '<form><script src="https://checkout.razorpay.com/v1/payment-button.js" data-payment_button_id="pl_SeVzHsOezXCpCV" async></script></form>'
-            }}
-          />
+          <RazorpayButton buttonId="pl_SeVzHsOezXCpCV" />
           <p className="mt-3 text-center text-xs text-slate-500">
             After payment, your plan will be activated within 24 hours. Contact support@capitalflow.in
             for assistance.
