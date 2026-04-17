@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import type { Plan } from "@/lib/pricing";
-import { PaymentButton } from "@/components/PaymentButton";
 
 interface PricingCardProps {
   plan: Plan;
@@ -27,6 +26,13 @@ export function PricingCard({
   onUpgradeSuccess,
   onUpgradeFailure
 }: PricingCardProps) {
+  void isLoggedIn;
+  void userEmail;
+  void userName;
+  void userPhone;
+  void onUpgradeSuccess;
+  void onUpgradeFailure;
+
   const price = isYearly ? plan.yearlyPrice : plan.monthlyPrice;
   const period = isYearly ? "/year" : "/month";
   const isFree = price === 0;
@@ -35,7 +41,9 @@ export function PricingCard({
     (currentPlan === "free" && plan.name === "Free") ||
     (currentPlan === "pro" && plan.name === "Flow Pro") ||
     (currentPlan === "gold" && plan.name === "Flow Gold");
-  const amountInPaise = price * 100;
+
+  const isProPlan = plan.name === "Flow Pro";
+  const isGoldPlan = plan.name === "Flow Gold";
 
   return (
     <div
@@ -76,17 +84,34 @@ export function PricingCard({
         >
           Current Plan
         </button>
-      ) : isLoggedIn ? (
-        <PaymentButton
-          planName={plan.name}
-          amount={amountInPaise}
-          currency="INR"
-          userEmail={userEmail}
-          userName={userName}
-          userPhone={userPhone}
-          onSuccess={(paymentId) => onUpgradeSuccess?.(paymentId)}
-          onFailure={(error) => onUpgradeFailure?.(error)}
-        />
+      ) : isProPlan ? (
+        <div className="w-full text-center">
+          <div
+            className="[&_form]:mx-auto [&_form]:w-full [&_iframe]:mx-auto [&_iframe]:max-w-full"
+            dangerouslySetInnerHTML={{
+              __html:
+                '<form><script src="https://checkout.razorpay.com/v1/payment-button.js" data-payment_button_id="pl_SeVxgXvkLncDMj" async></script></form>'
+            }}
+          />
+          <p className="mt-3 text-center text-xs text-slate-500">
+            After payment, your plan will be activated within 24 hours. Contact support@capitalflow.in
+            for assistance.
+          </p>
+        </div>
+      ) : isGoldPlan ? (
+        <div className="w-full text-center">
+          <div
+            className="[&_form]:mx-auto [&_form]:w-full [&_iframe]:mx-auto [&_iframe]:max-w-full"
+            dangerouslySetInnerHTML={{
+              __html:
+                '<form><script src="https://checkout.razorpay.com/v1/payment-button.js" data-payment_button_id="pl_SeVzHsOezXCpCV" async></script></form>'
+            }}
+          />
+          <p className="mt-3 text-center text-xs text-slate-500">
+            After payment, your plan will be activated within 24 hours. Contact support@capitalflow.in
+            for assistance.
+          </p>
+        </div>
       ) : (
         <Link
           href="/signup"
@@ -161,4 +186,3 @@ export function PricingCard({
     </div>
   );
 }
-
