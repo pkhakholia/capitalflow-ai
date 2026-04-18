@@ -309,7 +309,7 @@ export async function POST(req: Request) {
           try {
             const { error: updateError } = await supabase
               .from("profiles")
-              .update({ subscription_status: "past_due" })
+              .update({ subscription_status: "inactive" })
               .eq("subscription_id", subscriptionId);
 
             if (updateError) {

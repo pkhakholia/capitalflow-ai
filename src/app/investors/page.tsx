@@ -10,6 +10,8 @@ import { InvestorCard } from "@/components/investors/InvestorCard";
 import { ContactModal } from "@/components/matches/ContactModal";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
+import { usePlan } from "@/hooks/usePlan";
+import UpgradePrompt from "@/components/paywall/UpgradePrompt";
 
 function pickActiveByTimestamp<T extends Record<string, unknown>>(rows: T[]): T | null {
   if (!rows.length) return null;
@@ -50,6 +52,7 @@ export default function InvestorsPage() {
 
 function InvestorsContent() {
   const router = useRouter();
+  const { limits } = usePlan();
   const [investors, setInvestors] = React.useState<InvestorProfile[]>([]);
   const [activeStartup, setActiveStartup] = React.useState<StartupProfile | null>(null);
   
@@ -63,6 +66,7 @@ function InvestorsContent() {
 
   const [selectedMatch, setSelectedMatch] = React.useState<MatchResult | null>(null);
   const [defaultMethod, setDefaultMethod] = React.useState<"email" | "pitchDeck">("email");
+  const [filterLimitError, setFilterLimitError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     let isMounted = true;
@@ -113,6 +117,27 @@ function InvestorsContent() {
   const uniqueSectors = Array.from(new Set(investors.flatMap(i => i.sectorFocus))).sort();
   const uniqueStages = Array.from(new Set(investors.flatMap(i => i.stageFocus))).sort();
   const uniqueRegions = Array.from(new Set(investors.flatMap(i => i.regions))).sort();
+
+  const activeFiltersCount = [selectedSector, selectedStage, selectedRegion].filter((value) => value !== "All").length;
+  const maxFilters = limits.filters;
+
+  const applyFilterChange = (
+    nextValues: { sector?: string; stage?: string; region?: string },
+    commit: () => void
+  ) => {
+    const nextSector = nextValues.sector ?? selectedSector;
+    const nextStage = nextValues.stage ?? selectedStage;
+    const nextRegion = nextValues.region ?? selectedRegion;
+    const nextCount = [nextSector, nextStage, nextRegion].filter((value) => value !== "All").length;
+
+    if (Number.isFinite(maxFilters) && nextCount > maxFilters) {
+      setFilterLimitError(`Your ${String(maxFilters)}-filter limit is reached on this plan.`);
+      return;
+    }
+
+    setFilterLimitError(null);
+    commit();
+  };
 
   const handleContactClick = (investor: InvestorProfile, method: "email" | "pitchDeck") => {
     if (!activeStartup) {
@@ -165,7 +190,12 @@ function InvestorsContent() {
             <div className="flex gap-3 w-full sm:w-auto overflow-x-auto">
               <select 
                 value={selectedSector} 
-                onChange={(e) => setSelectedSector(e.target.value)}
+                onChange={(e) =>
+                  applyFilterChange(
+                    { sector: e.target.value },
+                    () => setSelectedSector(e.target.value)
+                  )
+                }
                 className="px-3 py-2 border border-[var(--vm-slate-5)] rounded-md text-sm bg-white text-[var(--vm-slate-2)] outline-none focus:border-[var(--vm-indigo)]"
               >
                 <option value="All">All Sectors</option>
@@ -174,7 +204,12 @@ function InvestorsContent() {
 
               <select 
                 value={selectedStage} 
-                onChange={(e) => setSelectedStage(e.target.value)}
+                onChange={(e) =>
+                  applyFilterChange(
+                    { stage: e.target.value },
+                    () => setSelectedStage(e.target.value)
+                  )
+                }
                 className="px-3 py-2 border border-[var(--vm-slate-5)] rounded-md text-sm bg-white text-[var(--vm-slate-2)] outline-none focus:border-[var(--vm-indigo)]"
               >
                 <option value="All">All Stages</option>
@@ -183,7 +218,12 @@ function InvestorsContent() {
 
               <select 
                 value={selectedRegion} 
-                onChange={(e) => setSelectedRegion(e.target.value)}
+                onChange={(e) =>
+                  applyFilterChange(
+                    { region: e.target.value },
+                    () => setSelectedRegion(e.target.value)
+                  )
+                }
                 className="px-3 py-2 border border-[var(--vm-slate-5)] rounded-md text-sm bg-white text-[var(--vm-slate-2)] outline-none focus:border-[var(--vm-indigo)]"
               >
                 <option value="All">All Regions</option>
@@ -191,6 +231,18 @@ function InvestorsContent() {
               </select>
             </div>
           </div>
+
+          {Number.isFinite(maxFilters) ? (
+            <div className="mb-4 text-xs text-[var(--vm-slate-3)]">
+              Filters used: {activeFiltersCount}/{maxFilters}
+            </div>
+          ) : null}
+
+          {filterLimitError ? (
+            <div className="mb-4">
+              <UpgradePrompt feature="Advanced Investor Search Filters" />
+            </div>
+          ) : null}
 
           <div className="flex bg-[var(--vm-surface)] text-xs font-semibold text-[var(--vm-slate-4)] uppercase tracking-wide px-6 py-4 border-b border-[var(--vm-slate-5)]">
             <div className="w-1/4 min-w-[200px]">Investor</div>

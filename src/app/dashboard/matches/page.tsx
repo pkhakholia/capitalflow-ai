@@ -15,6 +15,8 @@ import { calculateMatchScore } from "@/app/actions/match";
 import { startupRowToProfile, investorRowToProfile } from "@/lib/supabase-mapping";
 import type { InvestorProfile, StartupProfile, MatchResult } from "@/lib/types";
 import { useAuth } from "@/hooks/useAuth";
+import { usePlan } from "@/hooks/usePlan";
+import UpgradePrompt from "@/components/paywall/UpgradePrompt";
 
 type Mode = "startup" | "investor";
 
@@ -60,6 +62,7 @@ export default function MatchesPage() {
 }
 
 function MatchesContent() {
+  const { limits } = usePlan();
   // Paywall temporarily disabled for testing.
   const [hasPaid] = React.useState(true);
   const [checkedPayment] = React.useState(true);
@@ -175,8 +178,10 @@ function MatchesContent() {
       if (isActive) setMatches(initialScored);
       
       let updated = false;
+      const aiBudget = Math.max(0, Math.floor(limits.aiMatches));
       const updatedScored = await Promise.all(
-        initialScored.map(async (m) => {
+        initialScored.map(async (m, index) => {
+          if (index >= aiBudget) return m;
           if (aiScoreCache.current[m.id]) {
             return { ...m, ...aiScoreCache.current[m.id] };
           }
@@ -203,7 +208,7 @@ function MatchesContent() {
     return () => {
       isActive = false;
     };
-  }, [mode, dataVersion, loading, error, activeStartup, activeInvestor, startups, investors]);
+  }, [mode, dataVersion, loading, error, activeStartup, activeInvestor, startups, investors, limits.aiMatches]);
 
   if (!checkedPayment) {
     return (
@@ -219,6 +224,12 @@ function MatchesContent() {
 
   return (
     <div style={{ padding: "28px", minHeight: "100vh", background: "var(--vm-surface)" }}>
+      {limits.aiMatches === 0 ? (
+        <div style={{ marginBottom: "16px" }}>
+          <UpgradePrompt feature="AI Matching" />
+        </div>
+      ) : null}
+
       {loading ? (
         <Card>
           <CardHeader>

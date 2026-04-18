@@ -12,6 +12,8 @@ import { CRMBoard } from "@/components/crm/CRMBoard";
 import { PitchDeckAnalyzer } from "@/components/pitch/PitchDeckAnalyzer";
 import { useRequireRole } from "@/hooks/useAuth";
 import { useAuth } from "@/components/auth/auth-provider";
+import { usePlan } from "@/hooks/usePlan";
+import UpgradePrompt from "@/components/paywall/UpgradePrompt";
 import type { Founder } from "@/types/founder";
 import type { InvestorOutreach } from "@/types/outreach";
 
@@ -237,6 +239,7 @@ export default function DashboardPage() {
 function DashboardContent({ user }: { user: { id: string; email: string; created_at: string } }) {
   const router = useRouter();
   const { signOut } = useAuth();
+  const { limits } = usePlan();
   const [hasPaid] = React.useState(true);
   const [checkedPayment] = React.useState(true);
   const [startup, setStartup] = React.useState<StartupRow | null>(null);
@@ -468,7 +471,13 @@ function DashboardContent({ user }: { user: { id: string; email: string; created
                 </div>
               </div>
             </div>
-            <div className="mt-8"><PitchDeckAnalyzer /></div>
+            <div className="mt-8">
+              {limits.pitchAnalyzer ? (
+                <PitchDeckAnalyzer />
+              ) : (
+                <UpgradePrompt feature="AI Pitch Analyzer" />
+              )}
+            </div>
           </>
         )}
       </div>

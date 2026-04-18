@@ -4,6 +4,8 @@ import * as React from "react";
 import { Loader2 } from "lucide-react";
 
 import { useAuth } from "@/hooks/useAuth";
+import { usePlan } from "@/hooks/usePlan";
+import UpgradePrompt from "@/components/paywall/UpgradePrompt";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -91,6 +93,16 @@ export default function PitchBuilderPage() {
 }
 
 function PitchBuilderContent() {
+  const { limits } = usePlan();
+
+  if (!limits.pitchBuilder) {
+    return (
+      <div style={{ padding: "28px", minHeight: "100vh", background: "var(--vm-surface)" }}>
+        <UpgradePrompt feature="Pitch Builder" />
+      </div>
+    );
+  }
+
   const [startupName, setStartupName] = React.useState("");
   const [industry, setIndustry] = React.useState("");
   const [stage, setStage] = React.useState("");

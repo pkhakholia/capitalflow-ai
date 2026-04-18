@@ -3,10 +3,10 @@
 import * as React from "react";
 import { createContext, useContext, useState, useCallback } from "react";
 import { supabase } from "@/lib/supabase";
-import type { PlanType } from "@/lib/featureAccess";
+import type { PlanName } from "@/lib/planLimits";
 
 interface UserPlan {
-  plan: PlanType;
+  plan: PlanName;
   subscriptionStatus: "active" | "inactive" | "cancelled" | null;
   subscriptionEnd: string | null;
 }
@@ -15,7 +15,7 @@ interface UserPlanContextType {
   userPlan: UserPlan | null;
   isLoading: boolean;
   fetchUserPlan: (userId: string) => Promise<void>;
-  updateUserPlan: (plan: PlanType) => void;
+  updateUserPlan: (plan: PlanName) => void;
   clearUserPlan: () => void;
 }
 
@@ -46,7 +46,7 @@ export function UserPlanProvider({ children }: { children: React.ReactNode }) {
       }
 
       setUserPlan({
-        plan: (data?.plan as PlanType) || "free",
+        plan: (data?.plan as PlanName) || "free",
         subscriptionStatus: data?.subscription_status || null,
         subscriptionEnd: data?.subscription_end || null
       });
@@ -62,7 +62,7 @@ export function UserPlanProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const updateUserPlan = useCallback((plan: PlanType) => {
+  const updateUserPlan = useCallback((plan: PlanName) => {
     setUserPlan((prev) =>
       prev
         ? { ...prev, plan, subscriptionStatus: "active" }

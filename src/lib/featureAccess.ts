@@ -1,7 +1,7 @@
 export type PlanType = "free" | "pro" | "gold";
 
 export interface FeatureLimits {
-  outreach: number | "unlimited"; // per day
+  outreach: number | "unlimited"; // per day/month depending on plan
   aiMatching: number | "unlimited"; // per month
   aiAnalyzer: boolean;
   pitchBuilder: boolean;
@@ -23,11 +23,11 @@ export const featureAccess: Record<PlanType, PlanConfig> = {
     name: "free",
     displayName: "Free",
     limits: {
-      outreach: 1, // 1 per month (not day for free tier)
+      outreach: 1, // 1 per month for free
       aiMatching: 0,
       aiAnalyzer: false,
       pitchBuilder: false,
-      investorSearch: 1 // 1 filter
+      investorSearch: 1
     },
     price: {
       monthly: 0,
@@ -38,11 +38,11 @@ export const featureAccess: Record<PlanType, PlanConfig> = {
     name: "pro",
     displayName: "Flow Pro",
     limits: {
-      outreach: 5, // per day
-      aiMatching: 3, // per month
+      outreach: 5,
+      aiMatching: 3,
       aiAnalyzer: false,
       pitchBuilder: false,
-      investorSearch: 3 // 3 filters
+      investorSearch: 3
     },
     price: {
       monthly: 1500,
@@ -53,8 +53,8 @@ export const featureAccess: Record<PlanType, PlanConfig> = {
     name: "gold",
     displayName: "Flow Gold",
     limits: {
-      outreach: 15, // per day
-      aiMatching: 5, // per month
+      outreach: 15,
+      aiMatching: 5,
       aiAnalyzer: true,
       pitchBuilder: true,
       investorSearch: "unlimited"
@@ -72,22 +72,22 @@ export function getFeatureLimit(plan: PlanType, feature: keyof FeatureLimits): n
 
 export function canAccessFeature(plan: PlanType, feature: keyof FeatureLimits): boolean {
   const limit = getFeatureLimit(plan, feature);
-  
+
   if (typeof limit === "boolean") {
     return limit;
   }
-  
+
   if (typeof limit === "number") {
     return limit > 0;
   }
-  
+
   return limit === "unlimited";
 }
 
 export function formatLimit(value: number | boolean | "unlimited"): string {
   if (value === true) return "Unlimited";
-  if (value === false) return "—";
+  if (value === false) return "-";
   if (value === "unlimited") return "Unlimited";
-  if (value === 0) return "—";
+  if (value === 0) return "-";
   return value.toString();
 }

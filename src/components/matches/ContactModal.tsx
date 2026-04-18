@@ -5,7 +5,10 @@ import { X, Loader2, CheckCircle2 } from "lucide-react";
 import { handleSendEmail, type StructuredEmailFormData } from "@/lib/send-email";
 import { handleSendPitchDeck } from "@/lib/send-pitch-deck";
 import { getOrCreateInvestorOutreach } from "@/lib/outreach";
+import { getOutreachUsage, incrementOutreachUsage } from "@/lib/outreach-usage";
 import type { MatchResult } from "@/lib/types";
+import { useAuth } from "@/components/auth/auth-provider";
+import { usePlan } from "@/hooks/usePlan";
 
 interface ContactModalProps {
   isOpen: boolean;
@@ -47,6 +50,8 @@ const startupStageOptions = [
 ];
 
 export function ContactModal({ isOpen, onClose, match, mode, defaultMethod = "email" }: ContactModalProps) {
+  const { user, refreshProfile } = useAuth();
+  const { plan } = usePlan();
   const [method, setMethod] = React.useState<"email" | "pitchDeck">("email");
   const [emailForm, setEmailForm] = React.useState<StructuredEmailFormData>(defaultEmailForm);
   const [isSendingEmail, setIsSendingEmail] = React.useState(false);
@@ -54,6 +59,7 @@ export function ContactModal({ isOpen, onClose, match, mode, defaultMethod = "em
   const [isSuccess, setIsSuccess] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [toast, setToast] = React.useState<ToastState>(null);
+  const [outreachHint, setOutreachHint] = React.useState<string | null>(null);
 
   const toastTimeoutRef = React.useRef<number | null>(null);
 
@@ -86,8 +92,29 @@ export function ContactModal({ isOpen, onClose, match, mode, defaultMethod = "em
       setIsSuccess(false);
       setError(null);
       setToast(null);
+      setOutreachHint(null);
     }
   }, [defaultMethod, isOpen, match]);
+
+  React.useEffect(() => {
+    let active = true;
+    const checkUsage = async () => {
+      if (!isOpen || !user?.id) return;
+      const usage = await getOutreachUsage(user.id, plan);
+      if (!active) return;
+      if (usage.error) {
+        setOutreachHint("Unable to load outreach usage right now.");
+        return;
+      }
+      setOutreachHint(
+        `Outreach remaining this ${usage.period}: ${usage.remaining}/${usage.limit}`
+      );
+    };
+    checkUsage();
+    return () => {
+      active = false;
+    };
+  }, [isOpen, user?.id, plan]);
 
   if (!isOpen || !match) return null;
 
@@ -120,6 +147,29 @@ export function ContactModal({ isOpen, onClose, match, mode, defaultMethod = "em
     setError(null);
     setIsSuccess(false);
 
+    if (!user?.id) {
+      const authErr = "You need to be logged in to contact investors.";
+      setError(authErr);
+      showToast("error", authErr);
+      return;
+    }
+
+    const usage = await getOutreachUsage(user.id, plan);
+    if (usage.error) {
+      setError(usage.error);
+      showToast("error", usage.error);
+      return;
+    }
+    if (!usage.allowed) {
+      const limitErr =
+        usage.period === "day"
+          ? "Daily outreach limit reached. Upgrade your plan to send more outreach."
+          : "Monthly outreach limit reached. Upgrade your plan to send more outreach.";
+      setError(limitErr);
+      showToast("error", limitErr);
+      return;
+    }
+
     if (method === "email") {
       if (!canSubmitEmail) {
         const missingNames = emailValidationMissing.map(([name]) => name).join(", ");
@@ -149,6 +199,14 @@ export function ContactModal({ isOpen, onClose, match, mode, defaultMethod = "em
       if (!outreachResult.success) {
         console.warn("Failed to track outreach:", outreachResult.error);
       }
+
+      const usageAfter = await incrementOutreachUsage(user.id, plan);
+      if (!usageAfter.error) {
+        setOutreachHint(
+          `Outreach remaining this ${usageAfter.period}: ${usageAfter.remaining}/${usageAfter.limit}`
+        );
+      }
+      await refreshProfile();
 
       setIsSuccess(true);
       showToast("success", "Structured email sent successfully.");
@@ -183,6 +241,14 @@ export function ContactModal({ isOpen, onClose, match, mode, defaultMethod = "em
     if (!outreachResult.success) {
       console.warn("Failed to track outreach:", outreachResult.error);
     }
+
+    const usageAfter = await incrementOutreachUsage(user.id, plan);
+    if (!usageAfter.error) {
+      setOutreachHint(
+        `Outreach remaining this ${usageAfter.period}: ${usageAfter.remaining}/${usageAfter.limit}`
+      );
+    }
+    await refreshProfile();
 
     setIsSuccess(true);
     showToast("success", "Pitch deck email sent successfully.");
@@ -316,6 +382,21 @@ export function ContactModal({ isOpen, onClose, match, mode, defaultMethod = "em
                   {error}
                 </div>
               )}
+
+              {outreachHint ? (
+                <div
+                  style={{
+                    background: "var(--vm-surface)",
+                    color: "var(--vm-slate-2)",
+                    padding: "10px",
+                    borderRadius: "var(--radius-sm)",
+                    fontSize: "12px",
+                    border: "1px solid var(--vm-slate-6)"
+                  }}
+                >
+                  {outreachHint}
+                </div>
+              ) : null}
 
               <div style={{ display: "flex", background: "var(--vm-slate-6)", padding: "4px", borderRadius: "var(--radius-md)" }}>
                 <button
