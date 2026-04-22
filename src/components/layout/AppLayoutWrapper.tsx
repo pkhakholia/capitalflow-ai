@@ -7,8 +7,11 @@ import { Sidebar } from "./Sidebar";
 export function AppLayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   
-  // If we are on the exact root marketing page, bypass the sidebar
-  if (pathname === "/") {
+  // Public marketing pages should bypass the app sidebar layout.
+  if (
+    pathname === "/" ||
+    pathname.startsWith("/tools/")
+  ) {
     return (
       <main className="min-h-screen">
         {children}

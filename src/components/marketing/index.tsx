@@ -9,7 +9,8 @@ export function LandingNav() {
         <Logo />
         
         <div className="hidden items-center gap-8 md:flex">
-          <Link href="#features" className="text-[14px] font-medium text-[var(--vm-slate-3)] hover:text-[var(--vm-slate)] transition-colors">Features</Link>
+          <Link href="/#features" className="text-[14px] font-medium text-[var(--vm-slate-3)] hover:text-[var(--vm-slate)] transition-colors">Features</Link>
+          <Link href="/tools/cap-table-calculator" className="text-[14px] font-medium text-[var(--vm-slate-3)] hover:text-[var(--vm-slate)] transition-colors">Tools</Link>
           <Link href="/pricing" className="text-[14px] font-medium text-[var(--vm-slate-3)] hover:text-[var(--vm-slate)] transition-colors">Pricing</Link>
           <Link href="/login" className="text-[14px] font-medium text-[var(--vm-slate-3)] hover:text-[var(--vm-slate)] transition-colors">Login</Link>
         </div>

@@ -21,6 +21,7 @@ const PUBLIC_ROUTES = [
   "/about",
   "/select-role",
   "/auth/callback",
+  "/tools/cap-table-calculator",
 ];
 
 // Routes that authenticated users should be redirected from
