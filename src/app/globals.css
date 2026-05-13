@@ -45,11 +45,37 @@
 html,
 body {
   height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 body {
   background: hsl(var(--background));
   color: hsl(var(--foreground));
+  margin: 0;
+  overflow-x: hidden;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+img,
+video {
+  height: auto;
+}
+
+#__next {
+  overflow-x: hidden;
 }
 
 /* Base form elements */
@@ -69,4 +95,17 @@ input, textarea, select {
 input:focus, textarea:focus, select:focus {
   border-color: var(--vm-indigo);
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+textarea {
+  max-width: 100%;
+}
+
+@media (max-width: 767px) {
+  input,
+  textarea,
+  select,
+  button {
+    font-size: 16px;
+  }
 }

@@ -223,9 +223,9 @@ function MatchesContent() {
   // Paywall temporarily disabled.
 
   return (
-    <div style={{ padding: "28px", minHeight: "100vh", background: "var(--vm-surface)" }}>
+    <div className="min-h-screen bg-[var(--vm-surface)] px-4 py-5 sm:px-6 sm:py-6 lg:px-7">
       {limits.aiMatches === 0 ? (
-        <div style={{ marginBottom: "16px" }}>
+        <div className="mb-4">
           <UpgradePrompt feature="AI Matching" />
         </div>
       ) : null}
@@ -331,7 +331,7 @@ function MatchesContent() {
       ) : null}
 
       {/* MATCH CARDS GRID */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: "24px", marginTop: "24px" }}>
+      <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {matches.map((match) => {
           const isStartupMode = mode === "startup";
           const name = isStartupMode ? match.investor.firmName : match.startup.companyName;

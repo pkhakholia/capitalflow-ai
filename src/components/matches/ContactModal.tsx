@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { X, Loader2, CheckCircle2 } from "lucide-react";
+
 import { handleSendEmail, type StructuredEmailFormData } from "@/lib/send-email";
 import { handleSendPitchDeck } from "@/lib/send-pitch-deck";
 import { getOrCreateInvestorOutreach } from "@/lib/outreach";
@@ -49,7 +50,13 @@ const startupStageOptions = [
   "Growth"
 ];
 
-export function ContactModal({ isOpen, onClose, match, mode, defaultMethod = "email" }: ContactModalProps) {
+export function ContactModal({
+  isOpen,
+  onClose,
+  match,
+  mode,
+  defaultMethod = "email"
+}: ContactModalProps) {
   const { user, refreshProfile } = useAuth();
   const { plan } = usePlan();
   const [method, setMethod] = React.useState<"email" | "pitchDeck">("email");
@@ -160,6 +167,7 @@ export function ContactModal({ isOpen, onClose, match, mode, defaultMethod = "em
       showToast("error", usage.error);
       return;
     }
+
     if (!usage.allowed) {
       const limitErr =
         usage.period === "day"
@@ -190,7 +198,6 @@ export function ContactModal({ isOpen, onClose, match, mode, defaultMethod = "em
         return;
       }
 
-      // Track investor outreach in database
       const outreachResult = await getOrCreateInvestorOutreach(
         match.investor.id,
         match.startup.id,
@@ -232,7 +239,6 @@ export function ContactModal({ isOpen, onClose, match, mode, defaultMethod = "em
       return;
     }
 
-    // Track investor outreach in database
     const outreachResult = await getOrCreateInvestorOutreach(
       match.investor.id,
       match.startup.id,
@@ -256,65 +262,24 @@ export function ContactModal({ isOpen, onClose, match, mode, defaultMethod = "em
   };
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 50,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "rgba(15, 23, 42, 0.4)",
-        backdropFilter: "blur(2px)"
-      }}
-    >
-      {toast && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-3 backdrop-blur-[2px] sm:p-4">
+      {toast ? (
         <div
-          style={{
-            position: "fixed",
-            top: "20px",
-            right: "20px",
-            zIndex: 60,
-            background: toast.type === "success" ? "var(--vm-emerald)" : "var(--vm-rose)",
-            color: "white",
-            padding: "10px 14px",
-            borderRadius: "var(--radius-sm)",
-            boxShadow: "var(--shadow-md)",
-            fontSize: "13px",
-            fontWeight: 500
-          }}
+          className={`fixed left-3 right-3 top-3 z-[60] rounded-[var(--radius-sm)] px-3 py-2 text-[13px] font-medium text-white shadow-[var(--shadow-md)] sm:left-auto sm:right-5 sm:top-5 ${
+            toast.type === "success" ? "bg-[var(--vm-emerald)]" : "bg-[var(--vm-rose)]"
+          }`}
         >
           {toast.message}
         </div>
-      )}
+      ) : null}
 
-      <div
-        style={{
-          background: "var(--vm-white)",
-          borderRadius: "var(--radius-lg)",
-          width: "100%",
-          maxWidth: "640px",
-          boxShadow: "var(--shadow-lg)",
-          overflow: "hidden",
-          display: "flex",
-          flexDirection: "column",
-          maxHeight: "90vh"
-        }}
-      >
-        <div
-          style={{
-            padding: "20px 24px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            borderBottom: "1px solid var(--vm-slate-6)"
-          }}
-        >
+      <div className="flex max-h-[90vh] w-full max-w-[640px] flex-col overflow-hidden rounded-[var(--radius-lg)] bg-[var(--vm-white)] shadow-[var(--shadow-lg)]">
+        <div className="flex items-start justify-between gap-4 border-b border-[var(--vm-slate-6)] px-4 py-4 sm:px-6">
           <div>
-            <h2 style={{ fontSize: "18px", fontWeight: 600, color: "var(--vm-slate)", margin: "0 0 2px 0" }}>
+            <h2 className="mb-0.5 text-base font-semibold text-[var(--vm-slate)] sm:text-lg">
               Contact {targetName}
             </h2>
-            <p style={{ fontSize: "13px", color: "var(--vm-slate-3)", margin: 0 }}>
+            <p className="text-[13px] text-[var(--vm-slate-3)]">
               {method === "email"
                 ? "Send a concise, structured update to investor inbox."
                 : "Send your pitch deck as an email attachment and link."}
@@ -322,44 +287,24 @@ export function ContactModal({ isOpen, onClose, match, mode, defaultMethod = "em
           </div>
           <button
             onClick={onClose}
-            style={{ background: "transparent", border: "none", cursor: "pointer", color: "var(--vm-slate-3)" }}
+            className="inline-flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg text-[var(--vm-slate-3)] transition hover:bg-[var(--vm-slate-6)]"
             disabled={isSending}
           >
             <X size={20} />
           </button>
         </div>
 
-        <div style={{ padding: "24px", overflowY: "auto" }}>
+        <div className="overflow-y-auto px-4 py-4 sm:px-6 sm:py-6">
           {isSuccess ? (
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "32px 0",
-                gap: "16px"
-              }}
-            >
-              <div
-                style={{
-                  width: "48px",
-                  height: "48px",
-                  borderRadius: "50%",
-                  background: "var(--vm-emerald-light)",
-                  color: "var(--vm-emerald)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}
-              >
+            <div className="flex flex-col items-center justify-center gap-4 py-8">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--vm-emerald-light)] text-[var(--vm-emerald)]">
                 <CheckCircle2 size={24} />
               </div>
-              <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: "16px", fontWeight: 600, color: "var(--vm-slate)", marginBottom: "4px" }}>
+              <div className="text-center">
+                <div className="mb-1 text-base font-semibold text-[var(--vm-slate)]">
                   {method === "email" ? "Email Sent!" : "Pitch Deck Sent!"}
                 </div>
-                <div style={{ fontSize: "14px", color: "var(--vm-slate-3)" }}>
+                <div className="text-sm text-[var(--vm-slate-3)]">
                   {method === "email"
                     ? "Your structured startup update has been delivered."
                     : "Your pitch deck attachment and link have been delivered."}
@@ -367,87 +312,49 @@ export function ContactModal({ isOpen, onClose, match, mode, defaultMethod = "em
               </div>
             </div>
           ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              {error && (
-                <div
-                  style={{
-                    background: "var(--vm-rose-light)",
-                    color: "var(--vm-rose)",
-                    padding: "12px",
-                    borderRadius: "var(--radius-sm)",
-                    fontSize: "13px",
-                    border: "1px solid rgba(225, 29, 72, 0.2)"
-                  }}
-                >
+            <div className="flex flex-col gap-4">
+              {error ? (
+                <div className="rounded-[var(--radius-sm)] border border-rose-200 bg-[var(--vm-rose-light)] p-3 text-[13px] text-[var(--vm-rose)]">
                   {error}
                 </div>
-              )}
+              ) : null}
 
               {outreachHint ? (
-                <div
-                  style={{
-                    background: "var(--vm-surface)",
-                    color: "var(--vm-slate-2)",
-                    padding: "10px",
-                    borderRadius: "var(--radius-sm)",
-                    fontSize: "12px",
-                    border: "1px solid var(--vm-slate-6)"
-                  }}
-                >
+                <div className="rounded-[var(--radius-sm)] border border-[var(--vm-slate-6)] bg-[var(--vm-surface)] p-2.5 text-xs text-[var(--vm-slate-2)]">
                   {outreachHint}
                 </div>
               ) : null}
 
-              <div style={{ display: "flex", background: "var(--vm-slate-6)", padding: "4px", borderRadius: "var(--radius-md)" }}>
+              <div className="flex flex-col rounded-[var(--radius-md)] bg-[var(--vm-slate-6)] p-1 sm:flex-row">
                 <button
                   onClick={() => setMethod("email")}
-                  style={{
-                    flex: 1,
-                    padding: "8px",
-                    textWrap: "nowrap",
-                    textAlign: "center",
-                    fontSize: "13px",
-                    fontWeight: 500,
-                    borderRadius: "calc(var(--radius-md) - 2px)",
-                    background: method === "email" ? "var(--vm-white)" : "transparent",
-                    color: method === "email" ? "var(--vm-slate)" : "var(--vm-slate-3)",
-                    border: "none",
-                    boxShadow: method === "email" ? "0 1px 2px rgba(0,0,0,0.05)" : "none",
-                    cursor: "pointer",
-                    transition: "all 0.2s"
-                  }}
+                  className={`flex-1 rounded-[calc(var(--radius-md)-2px)] px-3 py-2 text-center text-[13px] font-medium transition ${
+                    method === "email"
+                      ? "bg-[var(--vm-white)] text-[var(--vm-slate)] shadow-sm"
+                      : "text-[var(--vm-slate-3)]"
+                  }`}
                 >
                   Send Email
                 </button>
                 <button
                   onClick={() => setMethod("pitchDeck")}
-                  style={{
-                    flex: 1,
-                    padding: "8px",
-                    textWrap: "nowrap",
-                    textAlign: "center",
-                    fontSize: "13px",
-                    fontWeight: 500,
-                    borderRadius: "calc(var(--radius-md) - 2px)",
-                    background: method === "pitchDeck" ? "var(--vm-white)" : "transparent",
-                    color: method === "pitchDeck" ? "var(--vm-slate)" : "var(--vm-slate-3)",
-                    border: "none",
-                    boxShadow: method === "pitchDeck" ? "0 1px 2px rgba(0,0,0,0.05)" : "none",
-                    cursor: "pointer",
-                    transition: "all 0.2s"
-                  }}
+                  className={`flex-1 rounded-[calc(var(--radius-md)-2px)] px-3 py-2 text-center text-[13px] font-medium transition ${
+                    method === "pitchDeck"
+                      ? "bg-[var(--vm-white)] text-[var(--vm-slate)] shadow-sm"
+                      : "text-[var(--vm-slate-3)]"
+                  }`}
                 >
                   Send Pitch Deck
                 </button>
               </div>
 
               {method === "email" ? (
-                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                  <div style={{ fontSize: "13px", color: "var(--vm-slate-3)" }}>
+                <div className="flex flex-col gap-3">
+                  <div className="text-[13px] text-[var(--vm-slate-3)]">
                     Share key startup details in a structured format for faster investor review.
                   </div>
 
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                  <div className="grid gap-3 sm:grid-cols-2">
                     <FieldLabel label="Sector" />
                     <input value={emailForm.sector} onChange={handleEmailChange("sector")} style={inputStyle} />
 
@@ -481,7 +388,7 @@ export function ContactModal({ isOpen, onClose, match, mode, defaultMethod = "em
                     </select>
                   </div>
 
-                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <div className="flex flex-col gap-2">
                     <FieldLabel label="Product Summary" />
                     <textarea
                       value={emailForm.productSummary}
@@ -490,7 +397,7 @@ export function ContactModal({ isOpen, onClose, match, mode, defaultMethod = "em
                     />
                   </div>
 
-                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <div className="flex flex-col gap-2">
                     <FieldLabel label="Traction Metrics" />
                     <textarea
                       value={emailForm.tractionMetrics}
@@ -500,63 +407,31 @@ export function ContactModal({ isOpen, onClose, match, mode, defaultMethod = "em
                   </div>
                 </div>
               ) : (
-                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                  <div style={{ fontSize: "13px", color: "var(--vm-slate-3)" }}>
+                <div className="flex flex-col gap-2.5">
+                  <div className="text-[13px] text-[var(--vm-slate-3)]">
                     We will fetch the pitch deck from startup profile, attach it as PDF, and include the source link in the email.
                   </div>
-                  <div
-                    style={{
-                      fontSize: "13px",
-                      background: "var(--vm-surface)",
-                      border: "1px solid var(--vm-slate-6)",
-                      borderRadius: "var(--radius-sm)",
-                      padding: "10px 12px",
-                      color: "var(--vm-slate-2)",
-                      wordBreak: "break-all"
-                    }}
-                  >
+                  <div className="break-all rounded-[var(--radius-sm)] border border-[var(--vm-slate-6)] bg-[var(--vm-surface)] px-3 py-2.5 text-[13px] text-[var(--vm-slate-2)]">
                     <strong>Pitch deck URL: </strong>
                     {match.startup.pitchDeckUrl ?? "Not available"}
                   </div>
                 </div>
               )}
 
-              <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", marginTop: "8px" }}>
+              <div className="mt-2 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
                 <button
                   onClick={onClose}
                   disabled={isSending}
-                  style={{
-                    background: "transparent",
-                    color: "var(--vm-slate-2)",
-                    border: "1px solid var(--vm-slate-5)",
-                    padding: "10px 16px",
-                    borderRadius: "var(--radius-sm)",
-                    fontSize: "13px",
-                    fontWeight: 500,
-                    cursor: isSending ? "not-allowed" : "pointer"
-                  }}
+                  className="min-h-11 rounded-[var(--radius-sm)] border border-[var(--vm-slate-5)] px-4 py-2.5 text-[13px] font-medium text-[var(--vm-slate-2)]"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleSend}
                   disabled={isSending || (method === "email" ? !canSubmitEmail : !canSubmitPitchDeck)}
-                  style={{
-                    background: "var(--vm-indigo)",
-                    color: "white",
-                    border: "none",
-                    padding: "10px 20px",
-                    borderRadius: "var(--radius-sm)",
-                    fontSize: "13px",
-                    fontWeight: 500,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    cursor: isSending ? "not-allowed" : "pointer",
-                    opacity: isSending || (method === "email" ? !canSubmitEmail : !canSubmitPitchDeck) ? 0.7 : 1
-                  }}
+                  className="flex min-h-11 items-center justify-center gap-2 rounded-[var(--radius-sm)] bg-[var(--vm-indigo)] px-5 py-2.5 text-[13px] font-medium text-white disabled:opacity-70"
                 >
-                  {isSending && <Loader2 size={16} style={{ animation: "spin 1s linear infinite" }} />}
+                  {isSending ? <Loader2 size={16} className="animate-spin" /> : null}
                   {isSending ? "Sending..." : method === "email" ? "Send Email" : "Send Pitch Deck"}
                 </button>
               </div>
@@ -569,11 +444,16 @@ export function ContactModal({ isOpen, onClose, match, mode, defaultMethod = "em
 }
 
 function FieldLabel({ label }: { label: string }) {
-  return <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--vm-slate)", display: "flex", alignItems: "center" }}>{label}</label>;
+  return (
+    <label className="flex items-center text-[13px] font-semibold text-[var(--vm-slate)]">
+      {label}
+    </label>
+  );
 }
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
+  minHeight: "44px",
   padding: "10px 12px",
   borderRadius: "var(--radius-md)",
   border: "1px solid var(--vm-slate-5)",

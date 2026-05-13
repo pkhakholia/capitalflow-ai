@@ -1,18 +1,11 @@
 "use client";
 
 import * as React from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, Zap, Check, AlertTriangle, ArrowUpRight, BookOpen } from "lucide-react";
 
 import { useAuth } from "@/hooks/useAuth";
 import { usePlan } from "@/hooks/usePlan";
 import UpgradePrompt from "@/components/paywall/UpgradePrompt";
-
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Field } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Zap, Check, AlertTriangle, ArrowUpRight, BookOpen } from "lucide-react";
 
 type PitchDeckOutput = {
   elevator_pitch: string;
@@ -35,55 +28,12 @@ type PitchDeckOutput = {
   top_3_improvements: string[];
 };
 
-function ScoreBar({ score }: { score: number }) {
-  const s = Math.max(0, Math.min(100, Math.round(score)));
-  return (
-    <div className="grid gap-1">
-      <div className="flex items-center justify-between text-sm">
-        <span className="text-mutedForeground">Investor readiness</span>
-        <span className="font-semibold">{s}/100</span>
-      </div>
-      <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-        <div
-          className="h-2 rounded-full bg-primary"
-          style={{ width: `${s}%` }}
-        />
-      </div>
-    </div>
-  );
-}
-
-function BulletList({ title, items }: { title: string; items: string[] }) {
-  if (!items.length) return null;
-  return (
-    <div className="grid gap-2">
-      <div className="text-sm font-semibold">{title}</div>
-      <ul className="list-disc pl-5 text-sm text-mutedForeground">
-        {items.map((x) => (
-          <li key={x}>{x}</li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function Section({ title, body }: { title: string; body: string }) {
-  return (
-    <div className="rounded-xl border bg-background p-4">
-      <div className="text-sm font-semibold">{title}</div>
-      <div className="mt-2 whitespace-pre-wrap text-sm text-mutedForeground">
-        {body || "—"}
-      </div>
-    </div>
-  );
-}
-
 export default function PitchBuilderPage() {
-  const { user, isLoading } = useAuth();
+  const { isLoading } = useAuth();
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-[#F8FAFC]">
         <Loader2 className="animate-spin text-[#4F46E5]" size={32} />
       </div>
     );
@@ -97,7 +47,7 @@ function PitchBuilderContent() {
 
   if (!limits.pitchBuilder) {
     return (
-      <div style={{ padding: "28px", minHeight: "100vh", background: "var(--vm-surface)" }}>
+      <div className="min-h-screen bg-[var(--vm-surface)] px-4 py-5 sm:px-6 sm:py-6 lg:px-7">
         <UpgradePrompt feature="Pitch Builder" />
       </div>
     );
@@ -163,13 +113,14 @@ function PitchBuilderContent() {
         );
       }
 
-      const w =
+      const nextWarning =
         typeof data?.warning?.message === "string"
           ? data.warning.message
           : typeof data?.result?.note === "string"
-            ? "⚠️ AI response limited. Showing basic output."
+            ? "AI response was limited. Showing the simplified output."
             : null;
-      setWarning(w);
+
+      setWarning(nextWarning);
       setResult((data?.result ?? null) as PitchDeckOutput | null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Pitch generation failed.");
@@ -179,108 +130,130 @@ function PitchBuilderContent() {
   };
 
   return (
-    <div style={{ padding: "28px", minHeight: "100vh", background: "var(--vm-surface)" }}>
-      {/* Page Header */}
-      <div style={{ marginBottom: "24px" }}>
-        <h1 style={{ fontFamily: "var(--font-fraunces), serif", fontSize: "26px", fontWeight: 600, color: "var(--vm-slate)", letterSpacing: "-0.5px", margin: "0 0 4px 0" }}>
+    <div className="min-h-screen bg-[var(--vm-surface)] px-4 py-5 sm:px-6 sm:py-6 lg:px-7">
+      <div className="mb-6">
+        <h1 className="m-0 font-[family-name:var(--font-fraunces)] text-[clamp(1.75rem,3vw,2.125rem)] font-semibold tracking-[-0.5px] text-[var(--vm-slate)]">
           Pitch Builder
         </h1>
-        <p style={{ fontSize: "14px", color: "var(--vm-slate-3)", margin: 0 }}>
+        <p className="mt-1 text-sm text-[var(--vm-slate-3)] sm:text-[15px]">
           Generate your startup story using AI.
         </p>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px", alignItems: "start" }}>
-        {/* LEFT CARD */}
-        <div style={{ background: "var(--vm-white)", border: "1px solid var(--vm-slate-5)", borderRadius: "var(--radius-lg)", padding: "24px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "24px" }}>
+      <div className="grid items-start gap-6 xl:grid-cols-2">
+        <div className="rounded-[var(--radius-lg)] border border-[var(--vm-slate-5)] bg-[var(--vm-white)] p-4 sm:p-6">
+          <div className="mb-6 flex items-center gap-2">
             <BookOpen size={16} color="var(--vm-indigo)" />
-            <span style={{ fontSize: "16px", fontWeight: 600, color: "var(--vm-slate)" }}>Your Startup Story</span>
+            <span className="text-base font-semibold text-[var(--vm-slate)]">Your Startup Story</span>
           </div>
 
-          <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-            {error && <div style={{ color: "var(--vm-rose)", fontSize: "13px", padding: "10px", background: "var(--vm-rose-light)", borderRadius: "var(--radius-sm)" }}>{error}</div>}
-            
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-              <div>
-                <div style={{ fontSize: "13px", fontWeight: 500, color: "var(--vm-slate)", marginBottom: "6px" }}>Company Name *</div>
+          <form onSubmit={onSubmit} className="flex flex-col gap-4">
+            {error ? (
+              <div className="rounded-[var(--radius-sm)] bg-[var(--vm-rose-light)] p-2.5 text-[13px] text-[var(--vm-rose)]">
+                {error}
+              </div>
+            ) : null}
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <FormField label="Company Name *">
                 <input value={startupName} onChange={(e) => setStartupName(e.target.value)} required />
-              </div>
-              <div>
-                <div style={{ fontSize: "13px", fontWeight: 500, color: "var(--vm-slate)", marginBottom: "6px" }}>Industry *</div>
+              </FormField>
+              <FormField label="Industry *">
                 <input value={industry} onChange={(e) => setIndustry(e.target.value)} required />
-              </div>
+              </FormField>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-              <div>
-                <div style={{ fontSize: "13px", fontWeight: 500, color: "var(--vm-slate)", marginBottom: "6px" }}>Stage *</div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <FormField label="Stage *">
                 <input value={stage} onChange={(e) => setStage(e.target.value)} required />
-              </div>
-              <div>
-                <div style={{ fontSize: "13px", fontWeight: 500, color: "var(--vm-slate)", marginBottom: "6px" }}>Funding Ask</div>
+              </FormField>
+              <FormField label="Funding Ask">
                 <input value={fundingAsk} onChange={(e) => setFundingAsk(e.target.value)} />
-              </div>
+              </FormField>
             </div>
 
-            <div>
-              <div style={{ fontSize: "13px", fontWeight: 500, color: "var(--vm-slate)", marginBottom: "6px" }}>Problem *</div>
+            <FormField label="Problem *">
               <textarea value={problem} onChange={(e) => setProblem(e.target.value)} style={{ minHeight: "80px", resize: "vertical" }} required />
-            </div>
-
-            <div>
-              <div style={{ fontSize: "13px", fontWeight: 500, color: "var(--vm-slate)", marginBottom: "6px" }}>Solution *</div>
+            </FormField>
+            <FormField label="Solution *">
               <textarea value={solution} onChange={(e) => setSolution(e.target.value)} style={{ minHeight: "80px", resize: "vertical" }} required />
-            </div>
-
-            <div>
-              <div style={{ fontSize: "13px", fontWeight: 500, color: "var(--vm-slate)", marginBottom: "6px" }}>Target Market *</div>
+            </FormField>
+            <FormField label="Target Market *">
               <textarea value={targetMarket} onChange={(e) => setTargetMarket(e.target.value)} style={{ minHeight: "80px", resize: "vertical" }} required />
-            </div>
-
-            <div>
-              <div style={{ fontSize: "13px", fontWeight: 500, color: "var(--vm-slate)", marginBottom: "6px" }}>Business Model</div>
+            </FormField>
+            <FormField label="Business Model">
               <textarea value={businessModel} onChange={(e) => setBusinessModel(e.target.value)} style={{ minHeight: "80px", resize: "vertical" }} />
-            </div>
-
-            <div>
-              <div style={{ fontSize: "13px", fontWeight: 500, color: "var(--vm-slate)", marginBottom: "6px" }}>Traction</div>
+            </FormField>
+            <FormField label="Traction">
               <textarea value={traction} onChange={(e) => setTraction(e.target.value)} style={{ minHeight: "80px", resize: "vertical" }} />
-            </div>
-
-            <div>
-              <div style={{ fontSize: "13px", fontWeight: 500, color: "var(--vm-slate)", marginBottom: "6px" }}>Team Background</div>
+            </FormField>
+            <FormField label="Team Background">
               <textarea value={teamBackground} onChange={(e) => setTeamBackground(e.target.value)} style={{ minHeight: "80px", resize: "vertical" }} />
-            </div>
+            </FormField>
 
-            <button type="submit" disabled={!canSubmit || loading} style={{ width: "100%", background: "var(--vm-indigo)", color: "white", padding: "12px", borderRadius: "var(--radius-sm)", border: "none", fontSize: "14px", fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", cursor: canSubmit ? "pointer" : "not-allowed", opacity: canSubmit ? 1 : 0.7, marginTop: "8px" }}>
+            <button
+              type="submit"
+              disabled={!canSubmit || loading}
+              style={{
+                width: "100%",
+                background: "var(--vm-indigo)",
+                color: "white",
+                padding: "12px",
+                borderRadius: "var(--radius-sm)",
+                border: "none",
+                fontSize: "14px",
+                fontWeight: 600,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "8px",
+                cursor: canSubmit ? "pointer" : "not-allowed",
+                opacity: canSubmit ? 1 : 0.7,
+                marginTop: "8px",
+                minHeight: "44px"
+              }}
+            >
               <Zap size={16} fill="currentColor" />
               {loading ? "Generating..." : "Generate Pitch"}
             </button>
           </form>
         </div>
 
-        {/* RIGHT CARD */}
-        <div style={{ background: "var(--vm-white)", border: "1px solid var(--vm-slate-5)", borderRadius: "var(--radius-lg)", padding: "24px", position: "sticky", top: "24px" }}>
-          <div style={{ marginBottom: "24px" }}>
-            <span style={{ fontSize: "16px", fontWeight: 600, color: "var(--vm-slate)" }}>Generated Pitch</span>
+        <div className="rounded-[var(--radius-lg)] border border-[var(--vm-slate-5)] bg-[var(--vm-white)] p-4 sm:p-6 xl:sticky xl:top-6">
+          <div className="mb-6">
+            <span className="text-base font-semibold text-[var(--vm-slate)]">Generated Pitch</span>
+            {warning ? (
+              <div className="mt-3 rounded-[var(--radius-sm)] border border-amber-200 bg-amber-50 px-3 py-2 text-[13px] text-amber-700">
+                {warning}
+              </div>
+            ) : null}
             {result ? (
-              <div style={{ marginTop: "16px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                  <span style={{ fontSize: "13px", color: "var(--vm-slate-3)" }}>Investor Readiness</span>
-                  <span style={{ fontSize: "13px", fontWeight: 600, color: "var(--vm-indigo)" }}>{result.investor_readiness_score}%</span>
+              <div className="mt-4">
+                <div className="mb-2 flex items-center justify-between">
+                  <span className="text-[13px] text-[var(--vm-slate-3)]">Investor Readiness</span>
+                  <span className="text-[13px] font-semibold text-[var(--vm-indigo)]">
+                    {result.investor_readiness_score}%
+                  </span>
                 </div>
-                <div style={{ width: "100%", height: "8px", background: "var(--vm-slate-6)", borderRadius: "4px", overflow: "hidden" }}>
-                  <div style={{ width: `${result.investor_readiness_score || 0}%`, height: "100%", background: "linear-gradient(90deg, var(--vm-indigo), var(--vm-indigo-mid))" }} />
+                <div className="h-2 w-full overflow-hidden rounded-full bg-[var(--vm-slate-6)]">
+                  <div
+                    className="h-full"
+                    style={{
+                      width: `${result.investor_readiness_score || 0}%`,
+                      background: "linear-gradient(90deg, var(--vm-indigo), var(--vm-indigo-mid))"
+                    }}
+                  />
                 </div>
               </div>
             ) : (
-              <div style={{ marginTop: "16px", fontSize: "13px", color: "var(--vm-slate-3)" }}>Fill out the form and hit Generate to see your AI-crafted pitch deck slides here.</div>
+              <div className="mt-4 text-[13px] text-[var(--vm-slate-3)]">
+                Fill out the form and hit Generate to see your AI-crafted pitch deck slides here.
+              </div>
             )}
           </div>
 
-          {result && (
-            <div style={{ display: "flex", flexDirection: "column" }}>
+          {result ? (
+            <div className="flex flex-col">
               {[
                 { n: "01", t: "Elevator Pitch", c: result.elevator_pitch },
                 { n: "02", t: "Problem Statement", c: result.sections?.problem },
@@ -291,46 +264,72 @@ function PitchBuilderContent() {
                 { n: "07", t: "Team", c: teamBackground || "Information not provided yet." },
                 { n: "08", t: "The Ask", c: result.sections?.funding_ask }
               ].map((slide, i) => (
-                <div key={i} style={{ paddingBottom: "16px", marginBottom: "16px", borderBottom: i < 7 ? "1px solid var(--vm-slate-6)" : "none" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-                    <span style={{ fontSize: "10px", textTransform: "uppercase", color: "var(--vm-indigo)", letterSpacing: "0.8px", fontWeight: 600 }}>{slide.n}</span>
-                    <span style={{ fontSize: "13.5px", fontWeight: 600, color: "var(--vm-slate)" }}>{slide.t}</span>
+                <div
+                  key={slide.n}
+                  className={i < 7 ? "mb-4 border-b border-[var(--vm-slate-6)] pb-4" : ""}
+                >
+                  <div className="mb-1.5 flex items-center gap-2">
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.8px] text-[var(--vm-indigo)]">
+                      {slide.n}
+                    </span>
+                    <span className="text-[13.5px] font-semibold text-[var(--vm-slate)]">
+                      {slide.t}
+                    </span>
                   </div>
-                  <div style={{ fontSize: "13px", color: "var(--vm-slate-2)", lineHeight: 1.6 }}>{slide.c || "—"}</div>
+                  <div className="text-[13px] leading-6 text-[var(--vm-slate-2)]">
+                    {slide.c || "-"}
+                  </div>
                 </div>
               ))}
 
-              <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "20px" }}>
-                <div>
-                  <div style={{ fontSize: "13px", fontWeight: 600, color: "var(--vm-slate)", marginBottom: "8px" }}>Key Strengths</div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    {result.key_strengths?.map((item, i) => (
-                      <div key={i} style={{ display: "flex", gap: "8px", alignItems: "flex-start" }}><Check size={14} color="var(--vm-emerald)" style={{ marginTop: "2px", flexShrink: 0 }} /><span style={{ fontSize: "13px", color: "var(--vm-slate-2)" }}>{item}</span></div>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <div style={{ fontSize: "13px", fontWeight: 600, color: "var(--vm-slate)", marginBottom: "8px" }}>Key Risks</div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    {result.key_risks?.map((item, i) => (
-                      <div key={i} style={{ display: "flex", gap: "8px", alignItems: "flex-start" }}><AlertTriangle size={14} color="var(--vm-amber)" style={{ marginTop: "2px", flexShrink: 0 }} /><span style={{ fontSize: "13px", color: "var(--vm-slate-2)" }}>{item}</span></div>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <div style={{ fontSize: "13px", fontWeight: 600, color: "var(--vm-slate)", marginBottom: "8px" }}>Top 3 Improvements</div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    {result.top_3_improvements?.map((item, i) => (
-                      <div key={i} style={{ display: "flex", gap: "8px", alignItems: "flex-start" }}><ArrowUpRight size={14} color="var(--vm-indigo)" style={{ marginTop: "2px", flexShrink: 0 }} /><span style={{ fontSize: "13px", color: "var(--vm-slate-2)" }}>{item}</span></div>
-                    ))}
-                  </div>
-                </div>
+              <div className="mt-4 flex flex-col gap-5">
+                <PitchList title="Key Strengths" icon={<Check size={14} color="var(--vm-emerald)" />} items={result.key_strengths} />
+                <PitchList title="Key Risks" icon={<AlertTriangle size={14} color="var(--vm-amber)" />} items={result.key_risks} />
+                <PitchList title="Top 3 Improvements" icon={<ArrowUpRight size={14} color="var(--vm-indigo)" />} items={result.top_3_improvements} />
               </div>
             </div>
-          )}
+          ) : null}
         </div>
       </div>
     </div>
   );
 }
 
+function FormField({
+  label,
+  children
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <div className="mb-1.5 text-[13px] font-medium text-[var(--vm-slate)]">{label}</div>
+      {children}
+    </div>
+  );
+}
+
+function PitchList({
+  title,
+  icon,
+  items
+}: {
+  title: string;
+  icon: React.ReactNode;
+  items: string[];
+}) {
+  return (
+    <div>
+      <div className="mb-2 text-[13px] font-semibold text-[var(--vm-slate)]">{title}</div>
+      <div className="flex flex-col gap-2">
+        {items?.map((item, i) => (
+          <div key={`${title}-${i}`} className="flex items-start gap-2">
+            <span className="mt-0.5 flex-shrink-0">{icon}</span>
+            <span className="text-[13px] text-[var(--vm-slate-2)]">{item}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

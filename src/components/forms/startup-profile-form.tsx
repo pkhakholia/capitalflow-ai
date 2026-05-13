@@ -305,7 +305,7 @@ export function StartupProfileForm({
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] px-6 py-10 font-[family-name:var(--font-dm-sans)] text-slate-900">
+    <div className="min-h-screen bg-[#F8FAFC] px-4 py-8 font-[family-name:var(--font-dm-sans)] text-slate-900 sm:px-6 sm:py-10">
       <div className="mx-auto max-w-[680px]">
         <div className="mb-8">
           <div className="mb-6 flex justify-start">
@@ -456,7 +456,7 @@ export function StartupProfileForm({
 
                 <FieldShell>
                   <span className={labelClassName}>Month & Year of Incorporation</span>
-                  <div className="flex gap-2">
+                  <div className="flex flex-col gap-2 sm:flex-row">
                     <div className="flex-1">
                       <select
                         className={inputClassName}
@@ -576,7 +576,7 @@ export function StartupProfileForm({
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               <FieldShell>
                 <label className={labelClassName}>Funding Ask (USD)</label>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                   <input
                     className={inputClassName}
                     inputMode="numeric"

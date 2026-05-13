@@ -50,7 +50,7 @@ export function RoundTracker({ outreachData }: RoundTrackerProps) {
   return (
     <div className="mb-8">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h2 className="text-xl font-semibold text-gray-900">Your Current Round</h2>
           <p className="text-sm text-gray-500 mt-1">
@@ -86,7 +86,7 @@ export function RoundTracker({ outreachData }: RoundTrackerProps) {
       </div>
 
       {/* Stage Cards */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {stageData.map((stage) => {
           const colors = STAGE_COLORS[stage.stage];
           return (
@@ -123,7 +123,7 @@ export function RoundTracker({ outreachData }: RoundTrackerProps) {
       </div>
 
       {/* Flow Arrow Indicators */}
-      <div className="flex justify-center mt-4">
+      <div className="mt-4 hidden justify-center md:flex">
         <div className="flex items-center gap-8 text-gray-400">
           {STAGES.slice(0, -1).map((stage, index) => (
             <div key={stage} className="flex items-center gap-2">

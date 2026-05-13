@@ -101,36 +101,36 @@ export function CRMBoard({ outreachData, onOutreachUpdated, onContactInvestor }:
     : null;
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
       {/* Header with Search and Filters */}
-      <div className="p-6 border-b border-gray-200">
-        <div className="flex items-center justify-between mb-4">
+      <div className="border-b border-gray-200 p-4 sm:p-6">
+        <div className="mb-4 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <h2 className="text-xl font-semibold text-gray-900">Investor Pipeline</h2>
             <p className="text-sm text-gray-500 mt-1">
               Drag and drop investors to update their stage
             </p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row">
             {/* Search */}
-            <div className="relative">
+            <div className="relative w-full sm:w-auto">
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
                 placeholder="Search investors..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent w-64"
+                className="min-h-11 w-full rounded-lg border border-gray-200 py-2 pl-9 pr-4 text-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:w-64"
               />
             </div>
 
             {/* Filter */}
-            <div className="relative">
+            <div className="relative w-full sm:w-auto">
               <Filter size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
               <select
                 value={selectedStage}
                 onChange={(e) => setSelectedStage(e.target.value as OutreachStage | "all")}
-                className="pl-9 pr-8 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent appearance-none bg-white cursor-pointer"
+                className="min-h-11 w-full cursor-pointer appearance-none rounded-lg border border-gray-200 bg-white py-2 pl-9 pr-8 text-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:w-auto"
               >
                 <option value="all">All Stages</option>
                 {STAGES.map((stage) => (
@@ -151,7 +151,8 @@ export function CRMBoard({ outreachData, onOutreachUpdated, onContactInvestor }:
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <div className="grid grid-cols-4 gap-0 divide-x divide-gray-200">
+        <div className="overflow-x-auto">
+          <div className="grid min-w-[960px] grid-cols-4 gap-0 divide-x divide-gray-200">
           {stageGroups.map(({ stage, items }) => {
             const colors = STAGE_COLORS[stage];
             return (
@@ -207,6 +208,7 @@ export function CRMBoard({ outreachData, onOutreachUpdated, onContactInvestor }:
               </div>
             );
           })}
+          </div>
         </div>
 
         {/* Drag Overlay */}

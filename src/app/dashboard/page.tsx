@@ -328,28 +328,28 @@ function DashboardContent({ user }: { user: { id: string; email: string; created
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white border-b border-[#E2E8F0]">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <header className="sticky top-0 z-30 border-b border-[#E2E8F0] bg-white">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6">
           <div />
 
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-[#64748B]">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <span className="hidden max-w-[220px] truncate text-sm text-[#64748B] sm:inline">
               {user?.email}
             </span>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-[#64748B] hover:text-rose-600 transition"
+              className="flex min-h-11 items-center gap-2 px-3 py-2 text-sm font-medium text-[#64748B] transition hover:text-rose-600"
             >
               <LogOut size={16} />
-              Logout
+              <span className="hidden sm:inline">Logout</span>
             </button>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-semibold text-gray-900 tracking-tight">
+          <h1 className="text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
             Good morning, {startup?.founder_name?.split(" ")[0] || "Founder"}
           </h1>
           <p className="text-gray-500 mt-2">
@@ -362,7 +362,7 @@ function DashboardContent({ user }: { user: { id: string; email: string; created
           <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-600">{error}</div>
         ) : (
           <>
-            <div className="grid grid-cols-3 gap-6 mb-8">
+            <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
               <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center">
@@ -403,7 +403,7 @@ function DashboardContent({ user }: { user: { id: string; email: string; created
             <RoundTracker outreachData={outreachData} />
             <CRMBoard outreachData={outreachData} onOutreachUpdated={refreshOutreach} />
             <div className="mt-8">
-              <div className="flex items-center justify-between mb-4">
+              <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <h2 className="text-xl font-semibold text-gray-900">Founding Team</h2>
                 <Link href="/founder-profile" className="inline-flex items-center gap-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">Edit Team<ArrowRight size={16} /></Link>
               </div>
@@ -440,12 +440,12 @@ function DashboardContent({ user }: { user: { id: string; email: string; created
                   </div>
                   {startup ? (
                     <div className="space-y-3">
-                      <div className="flex justify-between"><span className="text-sm text-gray-500">Name</span><span className="text-sm font-medium text-gray-900">{startup.startup_name || "TBD"}</span></div>
-                      <div className="flex justify-between"><span className="text-sm text-gray-500">Industry</span><span className="text-sm font-medium text-gray-900">{startup.industry || "TBD"}</span></div>
-                      <div className="flex justify-between"><span className="text-sm text-gray-500">Stage</span><span className="text-sm font-medium text-gray-900">{startup.stage || "TBD"}</span></div>
-                      <div className="flex justify-between items-center"><span className="text-sm text-gray-500">Traction</span><span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium" style={getTractionBadgeStyle(startup.traction_stage)}>{startup.traction_stage || "TBD"}</span></div>
-                      <div className="flex justify-between"><span className="text-sm text-gray-500">Monthly Revenue</span><span className="text-sm font-medium text-gray-900">{formatInr(startup.monthly_revenue)}</span></div>
-                      <div className="flex justify-between"><span className="text-sm text-gray-500">Location</span><span className="text-sm font-medium text-gray-900">{startup.city && startup.country ? `${startup.city}, ${startup.country}` : startup.city || startup.country || "TBD"}</span></div>
+                      <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between"><span className="text-sm text-gray-500">Name</span><span className="text-sm font-medium text-gray-900 sm:text-right">{startup.startup_name || "TBD"}</span></div>
+                      <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between"><span className="text-sm text-gray-500">Industry</span><span className="text-sm font-medium text-gray-900 sm:text-right">{startup.industry || "TBD"}</span></div>
+                      <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between"><span className="text-sm text-gray-500">Stage</span><span className="text-sm font-medium text-gray-900 sm:text-right">{startup.stage || "TBD"}</span></div>
+                      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between"><span className="text-sm text-gray-500">Traction</span><span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium" style={getTractionBadgeStyle(startup.traction_stage)}>{startup.traction_stage || "TBD"}</span></div>
+                      <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between"><span className="text-sm text-gray-500">Monthly Revenue</span><span className="text-sm font-medium text-gray-900 sm:text-right">{formatInr(startup.monthly_revenue)}</span></div>
+                      <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between"><span className="text-sm text-gray-500">Location</span><span className="text-sm font-medium text-gray-900 sm:text-right">{startup.city && startup.country ? `${startup.city}, ${startup.country}` : startup.city || startup.country || "TBD"}</span></div>
                     </div>
                   ) : <p className="text-sm text-gray-500">No startup profile found.</p>}
                   <Link href="/startup" className="inline-flex items-center justify-center w-full mt-4 px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">{startup ? "Edit Profile" : "Create Profile"}</Link>

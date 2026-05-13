@@ -261,7 +261,7 @@ export default function FounderProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] px-6 py-10 font-[family-name:var(--font-dm-sans)] text-slate-900">
+    <div className="min-h-screen bg-[#F8FAFC] px-4 py-8 font-[family-name:var(--font-dm-sans)] text-slate-900 sm:px-6 sm:py-10">
       <div className="mx-auto max-w-[680px]">
         <div className="mb-8">
           <div className="mb-6 flex justify-start">

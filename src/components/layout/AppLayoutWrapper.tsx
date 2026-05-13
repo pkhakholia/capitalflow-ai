@@ -13,7 +13,7 @@ export function AppLayoutWrapper({ children }: { children: React.ReactNode }) {
     pathname.startsWith("/tools/")
   ) {
     return (
-      <main className="min-h-screen">
+      <main className="min-h-screen overflow-x-hidden">
         {children}
       </main>
     );
@@ -21,9 +21,9 @@ export function AppLayoutWrapper({ children }: { children: React.ReactNode }) {
 
   // Otherwise, wrap the standard application layout structure
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--vm-surface)' }}>
+    <div className="flex min-h-screen flex-col bg-[var(--vm-surface)] lg:flex-row">
       <Sidebar />
-      <main style={{ flex: 1, overflow: 'auto' }}>
+      <main className="min-w-0 flex-1 overflow-x-hidden">
         {children}
       </main>
     </div>

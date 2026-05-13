@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Fraunces, DM_Sans, Plus_Jakarta_Sans } from "next/font/google";
 import { AppLayoutWrapper } from "@/components/layout/AppLayoutWrapper";
 import { AuthProvider } from "@/components/auth/auth-provider";
@@ -32,6 +32,11 @@ export const metadata: Metadata = {
   icons: {
     icon: BRAND.favicon
   }
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1
 };
 
 export default function RootLayout({

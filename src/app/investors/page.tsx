@@ -157,12 +157,12 @@ function InvestorsContent() {
   };
 
   return (
-    <div style={{ padding: "28px", minHeight: "100vh", background: "var(--vm-surface)" }}>
-      <div style={{ marginBottom: "24px" }}>
-        <h1 style={{ fontFamily: "var(--font-fraunces), serif", fontSize: "26px", fontWeight: 600, color: "var(--vm-slate)", letterSpacing: "-0.5px", margin: "0 0 4px 0" }}>
+    <div className="min-h-screen bg-[var(--vm-surface)] px-4 py-5 sm:px-6 sm:py-6 lg:px-7">
+      <div className="mb-6">
+        <h1 className="m-0 font-[family-name:var(--font-fraunces)] text-[clamp(1.75rem,3vw,2.125rem)] font-semibold tracking-[-0.5px] text-[var(--vm-slate)]">
           Investor Directory
         </h1>
-        <p style={{ fontSize: "14px", color: "var(--vm-slate-3)", margin: 0 }}>
+        <p className="mt-1 text-sm text-[var(--vm-slate-3)] sm:text-[15px]">
           Find and connect with top venture capital funds and angel investors.
         </p>
       </div>
@@ -173,21 +173,20 @@ function InvestorsContent() {
         <Card><CardHeader><CardTitle>Could not load directory</CardTitle><CardDescription>{error}</CardDescription></CardHeader></Card>
       ) : (
         <>
-          <div className="bg-white p-4 rounded-lg border border-[var(--vm-slate-6)] shadow-sm mb-6 flex flex-col sm:flex-row gap-4 items-center">
-            {/* Search */}
-            <div className="relative flex-1 w-full">
+          <div className="mb-6 rounded-xl border border-[var(--vm-slate-6)] bg-white p-4 shadow-sm">
+            <div className="flex flex-col gap-4 xl:flex-row xl:items-center">
+              <div className="relative w-full flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--vm-slate-4)]" size={18} />
               <input 
                 type="text" 
                 placeholder="Search by fund name..." 
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-[var(--vm-slate-5)] rounded-md text-sm outline-none focus:border-[var(--vm-indigo)] transition-colors"
+                className="min-h-11 w-full rounded-md border border-[var(--vm-slate-5)] py-2 pl-10 pr-4 text-sm outline-none transition-colors focus:border-[var(--vm-indigo)]"
               />
             </div>
             
-            {/* Filters */}
-            <div className="flex gap-3 w-full sm:w-auto overflow-x-auto">
+              <div className="grid w-full gap-3 sm:grid-cols-3 xl:w-auto xl:min-w-[420px]">
               <select 
                 value={selectedSector} 
                 onChange={(e) =>
@@ -196,7 +195,7 @@ function InvestorsContent() {
                     () => setSelectedSector(e.target.value)
                   )
                 }
-                className="px-3 py-2 border border-[var(--vm-slate-5)] rounded-md text-sm bg-white text-[var(--vm-slate-2)] outline-none focus:border-[var(--vm-indigo)]"
+                className="min-h-11 w-full rounded-md border border-[var(--vm-slate-5)] bg-white px-3 py-2 text-sm text-[var(--vm-slate-2)] outline-none focus:border-[var(--vm-indigo)]"
               >
                 <option value="All">All Sectors</option>
                 {uniqueSectors.map(s => <option key={s} value={s}>{s}</option>)}
@@ -210,7 +209,7 @@ function InvestorsContent() {
                     () => setSelectedStage(e.target.value)
                   )
                 }
-                className="px-3 py-2 border border-[var(--vm-slate-5)] rounded-md text-sm bg-white text-[var(--vm-slate-2)] outline-none focus:border-[var(--vm-indigo)]"
+                className="min-h-11 w-full rounded-md border border-[var(--vm-slate-5)] bg-white px-3 py-2 text-sm text-[var(--vm-slate-2)] outline-none focus:border-[var(--vm-indigo)]"
               >
                 <option value="All">All Stages</option>
                 {uniqueStages.map(s => <option key={s} value={s}>{s}</option>)}
@@ -224,11 +223,12 @@ function InvestorsContent() {
                     () => setSelectedRegion(e.target.value)
                   )
                 }
-                className="px-3 py-2 border border-[var(--vm-slate-5)] rounded-md text-sm bg-white text-[var(--vm-slate-2)] outline-none focus:border-[var(--vm-indigo)]"
+                className="min-h-11 w-full rounded-md border border-[var(--vm-slate-5)] bg-white px-3 py-2 text-sm text-[var(--vm-slate-2)] outline-none focus:border-[var(--vm-indigo)]"
               >
                 <option value="All">All Regions</option>
                 {uniqueRegions.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
+              </div>
             </div>
           </div>
 
@@ -244,15 +244,15 @@ function InvestorsContent() {
             </div>
           ) : null}
 
-          <div className="flex bg-[var(--vm-surface)] text-xs font-semibold text-[var(--vm-slate-4)] uppercase tracking-wide px-6 py-4 border-b border-[var(--vm-slate-5)]">
-            <div className="w-1/4 min-w-[200px]">Investor</div>
-            <div className="w-1/6 min-w-[120px]">Geography</div>
-            <div className="w-1/6 min-w-[120px]">Checks</div>
-            <div className="w-[15%] min-w-[100px]">Stages</div>
-            <div className="w-[15%] min-w-[120px]">Industries</div>
-            <div className="w-[120px] ml-auto text-right">Actions</div>
+          <div className="hidden border-b border-[var(--vm-slate-5)] bg-[var(--vm-surface)] px-6 py-4 text-xs font-semibold uppercase tracking-wide text-[var(--vm-slate-4)] md:flex">
+            <div className="flex-[1.5]">Investor</div>
+            <div className="flex-1">Geography</div>
+            <div className="flex-1">Checks</div>
+            <div className="flex-1">Stages</div>
+            <div className="flex-1">Industries</div>
+            <div className="ml-auto w-28 text-right">Actions</div>
           </div>
-          <div className="flex flex-col border border-[var(--vm-slate-5)] bg-white rounded-lg shadow-sm overflow-hidden mb-12">
+          <div className="mb-12 flex flex-col gap-4 rounded-lg border border-[var(--vm-slate-5)] bg-transparent shadow-sm md:gap-0 md:overflow-hidden md:bg-white">
             {filteredInvestors.length > 0 ? (
               filteredInvestors.map(investor => (
                 <InvestorCard 

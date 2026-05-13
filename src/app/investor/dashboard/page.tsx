@@ -109,26 +109,26 @@ function InvestorDashboardContent({ user }: { user: { id: string; email: string;
     <div className="min-h-screen bg-[#F8FAFC]">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white border-b border-[#E2E8F0]">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6">
           <Logo href="/investor/dashboard" />
 
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-[#64748B]">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <span className="hidden max-w-[220px] truncate text-sm text-[#64748B] sm:inline">
               {user?.email}
             </span>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-[#64748B] hover:text-rose-600 transition"
+              className="flex min-h-11 items-center gap-2 px-3 py-2 text-sm font-medium text-[#64748B] transition hover:text-rose-600"
             >
               <LogOut size={16} />
-              Logout
+              <span className="hidden sm:inline">Logout</span>
             </button>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 py-8">
+      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
         {/* Welcome Section */}
         <div className="mb-8">
           <h1 className="font-[family-name:var(--font-fraunces)] text-[26px] font-semibold tracking-[-0.5px] text-slate-900 mb-2">
@@ -140,7 +140,7 @@ function InvestorDashboardContent({ user }: { user: { id: string; email: string;
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-4 gap-4 mb-8">
+        <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <div className="bg-white rounded-xl border border-[#E2E8F0] p-5">
             <div className="text-[12px] uppercase tracking-[0.5px] text-[#64748B] mb-2">
               Total Deals
@@ -176,12 +176,12 @@ function InvestorDashboardContent({ user }: { user: { id: string; email: string;
         </div>
 
         {/* Filters */}
-        <div className="flex items-center gap-3 mb-6">
+        <div className="mb-6 flex flex-col gap-3 lg:flex-row lg:items-center">
           <div className="flex items-center gap-2 text-sm text-[#64748B]">
             <Filter size={16} />
             Filter:
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {[
               { value: "all", label: "All Deals" },
               { value: "high_match", label: "High Match (85+)" },
@@ -209,7 +209,7 @@ function InvestorDashboardContent({ user }: { user: { id: string; email: string;
             <Loader2 className="animate-spin text-[#4F46E5]" size={32} />
           </div>
         ) : (
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
             {filteredStartups.map((startup) => (
               <div
                 key={startup.id}
